@@ -1,0 +1,79 @@
+Name:                slack-api
+Version:             0.1
+Synopsis:            Bindings to the Slack RTM API.
+Description:         This library provides bindings to the <https://api.slack.com/rtm Slack Real Time Messaging API>.
+                     Users should find it easy to program their own Slack bots using the functionality found in `Web.Slack`.
+
+                     The bindings are very nearly complete. Library authors
+                     looking to build bindings to the <https://api.slack.com/web Slack Web API> may
+                     find the `FromJSON` instances located in `Web.Slack.Types`
+                     useful.
+
+                     Please note that the interface provided by this package is not yet stable. There are a number of unresolved
+                     internal inconsistencies which have yet to be resolved by Slack HQ.
+License:             MIT
+License-File:        LICENSE
+Author:              Matthew Pickering
+Maintainer:          matthewtpickering@gmail.com
+Stability:           Experimental
+Category:            Web
+Build-type:          Simple
+Cabal-version:       >=1.6
+
+
+Library
+  hs-source-dirs: src
+  ghc-options: -Wall -fno-warn-unused-do-bind
+  Exposed-Modules: Web.Slack,
+                   Web.Slack.Message,
+                   Web.Slack.State,
+                   Web.Slack.Types,
+                   Web.Slack.Config
+                   Web.Slack.Types.Bot,
+                   Web.Slack.Types.Comment,
+                   Web.Slack.Types.File,
+                   Web.Slack.Types.IM,
+                   Web.Slack.Types.Topic,
+                   Web.Slack.Types.Channel,
+                   Web.Slack.Types.Event,
+                   Web.Slack.Types.Event.Subtype,
+                   Web.Slack.Types.Group,
+                   Web.Slack.Types.Item,
+                   Web.Slack.Types.User,
+                   Web.Slack.Types.ChannelOpt,
+                   Web.Slack.Types.Id,
+                   Web.Slack.Types.Time,
+                   Web.Slack.Types.Error,
+                   Web.Slack.Types.Preferences,
+                   Web.Slack.Types.TeamPreferences,
+                   Web.Slack.Types.Team,
+                   Web.Slack.Types.Session,
+                   Web.Slack.Types.Self,
+                   Web.Slack.Types.Presence,
+                   Web.Slack.Types.Base
+
+  other-modules: Web.Slack.Utils
+  Build-depends:
+    -- corePackages (see [cabal2nix/src/Cabal2Nix/CorePackages.hs])
+    base                      >= 4.4      && < 5,
+    bytestring                >= 0.9.1   && < 0.11,
+    containers                >= 0.4,
+
+
+    -- Normal Packages
+    websockets > 0.9,
+    wreq                      >= 0.2,
+    text >= 1.2,
+    lens >= 4.6,
+    lens-aeson >= 1.0 ,
+    network >= 2.6,
+    openssl-streams >= 1.2,
+    HsOpenSSL >= 0.11 ,
+    io-streams >= 1.2,
+    mtl >= 2.1,
+    aeson >= 0.8 ,
+    time >= 1.4.2,
+    errors >= 1.4,
+    monad-loops >= 0.4,
+    transformers >= 0.3
+
