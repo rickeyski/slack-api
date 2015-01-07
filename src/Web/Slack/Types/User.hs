@@ -26,13 +26,17 @@ data User = User
 
 instance FromJSON User where
   parseJSON = withObject "User" (\o -> User <$> o .: "id" <*> o .: "name" <*> o .: "deleted"
-                                        <*> o .:? "status" <*> o .: "color"
+                                        <*> o .:? "status" <*> (o .:? "color" .!= "000000")
                                         <*> o .: "profile" <*> (parseJSON (Object o) :: Parser Permissions)
                                         <*> fmap (fromMaybe False) (o .:? "has_files")
-                                        <*> (parseJSON (Object o) :: Parser Timezone))
+                                        <*> ((return $ fromMaybe defaultTimezone (parseMaybe parseJSON (Object o))) :: Parser Timezone))
+
+defaultTimezone :: Timezone
+defaultTimezone = Timezone Nothing "Pacific Standard Time" (-28800)
+
 
 instance FromJSON Permissions where
-  parseJSON = withObject "Permissions" (\o -> let v = (o .:) in
+  parseJSON = withObject "Permissions" (\o -> let v x = (o .:? x .!= False) in
                                         Permissions <$> v "is_admin" <*> v "is_owner"
                                           <*> v "is_primary_owner" <*> v "is_restricted"
                                           <*> v "is_ultra_restricted" <*> v "is_bot")
@@ -44,7 +48,7 @@ data Timezone = Timezone
               } deriving Show
 
 instance FromJSON Timezone where
-  parseJSON = withObject "timezone" (\o -> Timezone <$> o .: "tz" <*> o .: "tz_label" <*> o .: "tz_offset")
+  parseJSON = withObject "timezone" (\o -> Timezone <$> o .:? "tz" <*> o .: "tz_label" <*> o .: "tz_offset")
 
 data Permissions = Permissions
                  { _isAdmin           :: Bool

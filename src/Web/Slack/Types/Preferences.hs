@@ -101,9 +101,9 @@ data Preferences = Preferences
 
 
 $(deriveJSON defaultOptions {fieldLabelModifier = \case
-                                                    "prefTime24" -> "time24"
-                                                    "prefNoMacssb1Banner" -> "no_macssb1_banner"
-                                                    s -> toSnake . drop 4 $ s} ''Preferences)
+                                                    "_prefTime24" -> "time24"
+                                                    "_prefNoMacssb1Banner" -> "no_macssb1_banner"
+                                                    s -> toSnake . drop (length "_pref") $ s} ''Preferences)
 
 -- Bad performance regression from lens 4.6 causes GHC to run out of memory
 -- on compilation

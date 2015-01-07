@@ -48,7 +48,7 @@ data TeamPreferences = TeamPreferences
                      } deriving Show
 
 
-$(deriveJSON defaultOptions {fieldLabelModifier = toSnake . drop 4} ''TeamPreferences)
+$(deriveJSON defaultOptions {fieldLabelModifier = toSnake . drop 5} ''TeamPreferences)
 
 --makeLensesWith abbreviatedFields ''TeamPreferences
 makeLenses ''TeamPreferences
