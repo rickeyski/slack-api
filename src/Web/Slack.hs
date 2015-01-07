@@ -80,7 +80,7 @@ runBot SlackConfig{..} bot start = do
   let Just url = r ^? responseBody . key "url" . _String
   (sessionInfo :: SlackSession) <-
     case eitherDecode (r ^. responseBody) of
-      Left e -> ioError . userError $ e
+      Left e -> (print (r ^. responseBody)) >> (ioError . userError $ e)
       Right res -> return res
   putStrLn "rtm.start call successful"
   let (host, path) = splitAt 19 (drop 6 $ T.unpack url)
