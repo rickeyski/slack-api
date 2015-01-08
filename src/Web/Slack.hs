@@ -112,12 +112,13 @@ mkBot partialState bot conn = do
     let initMeta = Meta conn 0
     botLoop (partialState initMeta) bot
 
-botLoop :: forall s . WS.Connection -> SlackState s -> SlackBot s -> IO ()
-botLoop conn st f =
+botLoop :: forall s . SlackState s -> SlackBot s -> IO ()
+botLoop st f =
   () <$ (flip S.runStateT st  . runSlack $ forever loop)
   where
     loop :: Slack s ()
     loop = do
+      conn <- use connection
       raw <- liftIO $ WS.receiveData conn
       let (msg :: Either String Event) = eitherDecode raw
       case msg of
