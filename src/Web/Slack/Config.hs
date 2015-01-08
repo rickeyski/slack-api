@@ -1,6 +1,11 @@
-module Web.Slack.Config (SlackConfig(..)) where
+{-# LANGUAGE TemplateHaskell #-}
+module Web.Slack.Config (SlackConfig(..), slackApiToken) where
+
+import Control.Lens.TH
 
 -- | Configuration options needed to connect to the Slack API
 data SlackConfig = SlackConfig
-                 { slackApiToken :: String -- ^ API Token for Bot
+                 { _slackApiToken :: String -- ^ API Token for Bot
                  } deriving (Show)
+
+makeLenses ''SlackConfig
