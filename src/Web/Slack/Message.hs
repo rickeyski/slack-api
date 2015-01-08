@@ -1,8 +1,9 @@
 {-# OPTIONS_GHC -fno-warn-unused-binds #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TemplateHaskell            #-}
-module Web.Slack.Message (sendMessage) where
+module Web.Slack.Message (sendMessage, makePingPacket, ping) where
 
+import           Control.Applicative
 import           Control.Lens
 import           Control.Monad.State
 import           Data.Aeson          (encode)
@@ -12,6 +13,7 @@ import qualified Data.Text           as T
 import qualified Network.WebSockets  as WS
 import           Web.Slack.State
 import           Web.Slack.Types
+import           Data.Time.Clock.POSIX
 
 data MessagePayload = MessagePayload
                     { messageId      :: Int
@@ -32,4 +34,28 @@ sendMessage cid message = do
   let payload = MessagePayload uid "message" cid message
   slackLog payload
   liftIO $ WS.sendTextData conn (encode payload)
+
+data PingPayload = PingPayload
+                 { pingId :: Int
+                 , pingType :: T.Text
+                 , pingTimestamp :: Int
+                 } deriving Show
+
+$(deriveToJSON defaultOptions {fieldLabelModifier = map toLower . drop 4} ''PingPayload)
+
+makePingPacket :: Slack s (IO ())
+makePingPacket = do
+  conn <- use connection
+  uid <- counter
+  now <- round <$> liftIO getPOSIXTime
+  let payload = PingPayload uid "ping" now
+  return (ping conn payload)
+
+
+-- | Send a ping packet to the server
+-- The server will respond with a @pong@ `Event`.
+ping :: WS.Connection -> PingPayload -> IO ()
+ping conn payload =
+  WS.sendTextData conn (encode payload)
+
 
