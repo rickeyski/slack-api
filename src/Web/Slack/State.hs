@@ -15,6 +15,7 @@ import           Control.Monad.IO.Class
 import qualified Control.Monad.State       as S
 import qualified Network.WebSockets        as WS
 import           Web.Slack.Types
+import           Web.Slack.Config
 
 newtype Slack s a = Slack {runSlack :: S.StateT (SlackState s) IO a}
   deriving (Monad, Functor, Applicative, S.MonadState (SlackState s), MonadIO)
@@ -34,6 +35,7 @@ data SlackState s = SlackState
                 , _session   :: SlackSession  -- ^ Information about the session at the
                                                   -- start of the connection
                 , _userState :: s             -- ^ User defined state
+                , _config    :: SlackConfig   -- ^ A copy of the initial configuration
                 } deriving Show
 
 

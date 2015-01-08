@@ -70,8 +70,8 @@ import           Web.Slack.Types
 --
 -- Be warned that this function will throw an `IOError` if the connection
 -- to the Slack API fails.
-runBot :: SlackConfig -> SlackBot s -> s -> IO ()
-runBot SlackConfig{..} bot start = do
+runBot :: forall s . SlackConfig -> SlackBot s -> s -> IO ()
+runBot conf bot start = do
   r <- get rtmStartUrl
   let Just (BoolPrim ok) = r ^? responseBody . key "ok"  . _Primitive
   unless ok (do
@@ -82,6 +82,8 @@ runBot SlackConfig{..} bot start = do
     case eitherDecode (r ^. responseBody) of
       Left e -> (print (r ^. responseBody)) >> (ioError . userError $ e)
       Right res -> return res
+  let partialState :: Metainfo -> SlackState s
+      partialState metainfo = SlackState metainfo sessionInfo start conf
   putStrLn "rtm.start call successful"
   let (host, path) = splitAt 19 (drop 6 $ T.unpack url)
   SSL.withOpenSSL $ do
@@ -95,17 +97,20 @@ runBot SlackConfig{..} bot start = do
     SSL.connect ssl
     (i,o) <- Streams.sslToStreams ssl
     (stream :: WS.Stream) <- WS.makeStream  (StreamsIO.read i) (\b -> StreamsIO.write (B.toStrict <$> b) o )
-    WS.runClientWithStream stream host path WS.defaultConnectionOptions [] (mkBot sessionInfo start bot)
+    WS.runClientWithStream stream host path WS.defaultConnectionOptions []
+      (mkBot partialState bot)
   where
     port = 443 :: Int
     rtmStartUrl :: String
-    rtmStartUrl = "https://slack.com/api/rtm.start?token=" ++ slackApiToken
+    rtmStartUrl = "https://slack.com/api/rtm.start?token="
+                    ++ (conf ^. slackApiToken)
 
 
-mkBot :: SlackSession -> s -> SlackBot s -> WS.ClientApp ()
-mkBot slackSession start f conn = do
+
+mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
+mkBot partialState bot conn = do
     let initMeta = Meta conn 0
-    botLoop conn (SlackState initMeta slackSession start) f
+    botLoop (partialState initMeta) bot
 
 botLoop :: forall s . WS.Connection -> SlackState s -> SlackBot s -> IO ()
 botLoop conn st f =
