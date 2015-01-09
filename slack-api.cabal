@@ -12,6 +12,8 @@ Description:         This library provides bindings to the <https://api.slack.co
                      Please note that the interface provided by this package is not yet stable. There are a number of unresolved
                      internal inconsistencies which have yet to be resolved by Slack HQ.
 License:             MIT
+Bug-reports:         https://github.com/mpickering/slack-api/issues
+
 License-File:        LICENSE
 Author:              Matthew Pickering
 Maintainer:          matthewtpickering@gmail.com
@@ -19,6 +21,9 @@ Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 Cabal-version:       >=1.6
+source-repository head
+    type: git
+    location: https://github.com/mpickering/slack-api.git
 
 
 Library
