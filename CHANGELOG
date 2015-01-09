@@ -1,0 +1,5 @@
+## 0.2.1
+
+* Add ping/pong events.
+* Add lenses for `SlackConfig`.
+* Make initial configuration availible in `SlackState`.
