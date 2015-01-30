@@ -72,6 +72,7 @@ Library
     lens >= 4.6,
     lens-aeson >= 1.0 ,
     network >= 2.6,
+    network-uri >= 2.6,
     openssl-streams >= 1.2,
     HsOpenSSL >= 0.11 ,
     io-streams >= 1.2,
