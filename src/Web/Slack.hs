@@ -51,6 +51,7 @@ import qualified Data.ByteString.Lazy       as B
 import qualified Data.ByteString.Lazy.Char8 as BC
 import qualified Data.Text                  as T
 import qualified Network.Socket             as S
+import qualified Network.URI                as URI
 import qualified Network.WebSockets         as WS
 import qualified Network.WebSockets.Stream  as WS
 import           Network.Wreq
@@ -85,27 +86,32 @@ runBot conf bot start = do
   let partialState :: Metainfo -> SlackState s
       partialState metainfo = SlackState metainfo sessionInfo start conf
   putStrLn "rtm.start call successful"
-  let (host, path) = splitAt 19 (drop 6 $ T.unpack url)
-  SSL.withOpenSSL $ do
-    ctx <- SSL.context
-    is  <- S.getAddrInfo Nothing (Just host) (Just $ show port)
-    let a = S.addrAddress $ head is
-        f = S.addrFamily $ head is
-    s <- S.socket f S.Stream S.defaultProtocol
-    S.connect s a
-    ssl <- SSL.connection ctx s
-    SSL.connect ssl
-    (i,o) <- Streams.sslToStreams ssl
-    (stream :: WS.Stream) <- WS.makeStream  (StreamsIO.read i) (\b -> StreamsIO.write (B.toStrict <$> b) o )
-    WS.runClientWithStream stream host path WS.defaultConnectionOptions []
-      (mkBot partialState bot)
+  case parseWebSocketUrl (T.unpack url) of
+    Just (host, path) -> do
+      SSL.withOpenSSL $ do
+        ctx <- SSL.context
+        is  <- S.getAddrInfo Nothing (Just host) (Just $ show port)
+        let a = S.addrAddress $ head is
+            f = S.addrFamily $ head is
+        s <- S.socket f S.Stream S.defaultProtocol
+        S.connect s a
+        ssl <- SSL.connection ctx s
+        SSL.connect ssl
+        (i,o) <- Streams.sslToStreams ssl
+        (stream :: WS.Stream) <- WS.makeStream  (StreamsIO.read i) (\b -> StreamsIO.write (B.toStrict <$> b) o )
+        WS.runClientWithStream stream host path WS.defaultConnectionOptions []
+          (mkBot partialState bot)
+    Nothing -> error $ "Couldn't parse WebSockets URL: " ++ T.unpack url
   where
     port = 443 :: Int
     rtmStartUrl :: String
     rtmStartUrl = "https://slack.com/api/rtm.start?token="
                     ++ (conf ^. slackApiToken)
-
-
+    parseWebSocketUrl :: String -> Maybe (String, String)
+    parseWebSocketUrl url = do
+      uri  <- URI.parseURI url
+      name <- URI.uriRegName <$> URI.uriAuthority uri
+      return (URI.uriPath uri, name)
 
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
