@@ -111,7 +111,7 @@ runBot conf bot start = do
     parseWebSocketUrl url = do
       uri  <- URI.parseURI url
       name <- URI.uriRegName <$> URI.uriAuthority uri
-      return (URI.uriPath uri, name)
+      return (name, URI.uriPath uri)
 
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
