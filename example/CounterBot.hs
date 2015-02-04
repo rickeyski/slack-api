@@ -6,12 +6,15 @@ import qualified Data.Text as T (pack)
 import Web.Slack
 import Web.Slack.Message
 
-import Control.Lens
-import Control.Lens.TH
+import System.Environment (lookupEnv)
+import Data.Maybe (fromMaybe)
+import Control.Applicative
 
-myConfig :: SlackConfig
-myConfig = SlackConfig
-         { slackApiToken = "..."
+import Control.Lens
+
+myConfig :: String -> SlackConfig
+myConfig apiToken = SlackConfig
+         { _slackApiToken = apiToken
          }
 
 data CounterState = CounterState
@@ -28,6 +31,9 @@ counterBot (Message cid _ _ _ _ _) = do
 counterBot _ = return ()
 
 main :: IO ()
-main = runBot myConfig counterBot startState
+main = do
+  apiToken <- fromMaybe (error "SLACK_API_TOKEN not set")
+               <$> lookupEnv "SLACK_API_TOKEN"
+  runBot (myConfig apiToken) counterBot startState
   where
     startState = CounterState 0

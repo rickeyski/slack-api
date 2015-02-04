@@ -19,7 +19,7 @@
 --
 -- > myConfig :: SlackConfig
 -- > myConfig = SlackConfig
--- >         { slackApiToken = "..." -- Specify your API token here
+-- >         { _slackApiToken = "..." -- Specify your API token here
 -- >         }
 -- >
 -- > -- type SlackBot s = Event -> Slack s ()
