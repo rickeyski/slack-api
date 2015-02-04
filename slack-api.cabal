@@ -20,7 +20,7 @@ Maintainer:          matthewtpickering@gmail.com
 Stability:           Experimental
 Category:            Web
 Build-type:          Simple
-Cabal-version:       >=1.6
+Cabal-version:       >=1.8
 source-repository head
     type: git
     location: https://github.com/mpickering/slack-api.git
@@ -83,3 +83,9 @@ Library
     monad-loops >= 0.4,
     transformers >= 0.3
 
+Test-Suite tests
+    Type: exitcode-stdio-1.0
+    Main-Is: tests-main.hs
+    ghc-options:   -threaded
+    HS-Source-Dirs: tests .
+    Build-Depends: slack-api, base
