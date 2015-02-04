@@ -78,7 +78,7 @@ Library
     io-streams >= 1.2,
     mtl >= 2.1,
     aeson >= 0.8 ,
-    time >= 1.4.2,
+    time >= 1.4.2 && < 1.5,
     errors >= 1.4,
     monad-loops >= 0.4,
     transformers >= 0.3
@@ -89,3 +89,4 @@ Test-Suite tests
     ghc-options:   -threaded
     HS-Source-Dirs: tests .
     Build-Depends: slack-api, base
+    Other-Modules: Tests.ConnectionTest
