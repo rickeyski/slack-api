@@ -27,7 +27,7 @@ data TeamIcons = TeamIcons
                , _teamIcon88      :: URL
                , _teamIcon102     :: URL
                , _teamIcon132     :: URL
-               , _teamIconDefault :: Bool
+               , _teamIconDefault :: Maybe Bool
                } deriving Show
 
 makeLenses ''Team
@@ -49,4 +49,4 @@ instance FromJSON TeamIcons where
                       <*> o .: "image_88"
                       <*> o .: "image_102"
                       <*> o .: "image_132"
-                      <*> o .: "image_default")
+                      <*> o .:? "image_default")
