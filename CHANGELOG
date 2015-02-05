@@ -1,3 +1,8 @@
+## 0.3
+
+* Change type of `teamIconDefault` to `Maybe Bool` in response to #4
+* Parsing the websockets URL is now more robust.
+
 ## 0.2.1
 
 * Add ping/pong events.
