@@ -78,6 +78,7 @@ data Profile = Profile
 makeLenses ''Profile
 makeLenses ''Permissions
 makeLenses ''Timezone
+makeLenses ''User
 
 instance FromJSON Profile where
   parseJSON = withObject "Profile"
