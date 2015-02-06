@@ -38,6 +38,7 @@ data TeamPreferences = TeamPreferences
                      , _teamWhoCanPostGeneral      :: Text
                      , _teamWhoCanKickChannels     :: Text
                      , _teamWhoCanKickGroups       :: Text
+{-                       
                      , _teamRetentionType          :: Int
                      , _teamRetentionDuration      :: Int
                      , _teamGroupRetentionType     :: Int
@@ -45,6 +46,7 @@ data TeamPreferences = TeamPreferences
                      , _teamDmRetentionType        :: Int
                      , _teamDmRetentionDuration    :: Int
                      , _teamRequireAtForMention    :: Int
+-}
                      } deriving Show
 
 
