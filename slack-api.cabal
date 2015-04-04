@@ -87,7 +87,7 @@ Library
 Test-Suite tests
     Type: exitcode-stdio-1.0
     Main-Is: tests-main.hs
-    ghc-options:   -threaded
+    ghc-options:   -threaded -Wall
     HS-Source-Dirs: tests .
     Build-Depends: slack-api, base
     Other-Modules: Tests.ConnectionTest
