@@ -9,6 +9,7 @@ import Web.Slack.Types.Base
 import Control.Lens.TH
 import Data.Aeson
 import Control.Applicative
+import Prelude
 
 data Team = Team
           { _teamId                :: TeamId

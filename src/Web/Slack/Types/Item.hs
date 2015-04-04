@@ -11,6 +11,7 @@ import Data.Text (Text)
 import Web.Slack.Types.Base
 
 import Control.Lens.TH
+import Prelude
 
 data Item = MessageItem ChannelId MessageUpdate
           | FileItem File

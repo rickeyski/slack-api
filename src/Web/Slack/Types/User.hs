@@ -11,6 +11,8 @@ import Control.Lens.TH
 import Web.Slack.Types.Id
 import Web.Slack.Types.Base
 
+import Prelude
+
 
 data User = User
           { _userId         :: UserId

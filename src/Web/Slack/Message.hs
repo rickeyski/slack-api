@@ -15,6 +15,8 @@ import           Web.Slack.State
 import           Web.Slack.Types
 import           Data.Time.Clock.POSIX
 
+import Prelude
+
 data MessagePayload = MessagePayload
                     { messageId      :: Int
                     , messageType    :: T.Text

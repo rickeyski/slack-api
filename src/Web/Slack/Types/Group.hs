@@ -12,6 +12,7 @@ import {-# SOURCE #-} Web.Slack.Types.ChannelOpt (ChannelOpt)
 import Control.Applicative
 
 import Data.Text (Text)
+import Prelude
 
 data Group = Group
            { _groupId         :: GroupId

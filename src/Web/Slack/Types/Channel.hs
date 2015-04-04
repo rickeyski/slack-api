@@ -11,6 +11,7 @@ import Web.Slack.Types.Id
 import Web.Slack.Types.Time
 import Web.Slack.Types.Topic
 import {-# SOURCE #-} Web.Slack.Types.ChannelOpt (ChannelOpt)
+import Prelude
 
 data Channel = Channel { _channelId         :: ChannelId
                        , _channelName       :: Text

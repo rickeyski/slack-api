@@ -10,6 +10,8 @@ import Web.Slack.Types.Id
 import Web.Slack.Types.Time
 import {-# SOURCE #-} Web.Slack.Types.ChannelOpt (ChannelOpt)
 
+import Prelude
+
 data IM = IM
         { _imId      :: IMId
         , _imUser    :: UserId

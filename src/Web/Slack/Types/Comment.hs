@@ -8,6 +8,7 @@ import Data.Text (Text)
 
 import Web.Slack.Types.Id
 import Web.Slack.Types.Time
+import Prelude
 
 data Comment = Comment
              { _commentId        :: CommentId

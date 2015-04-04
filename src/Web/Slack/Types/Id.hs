@@ -27,13 +27,13 @@ instance ToJSON (Id a) where
 instance FromJSON (Id a) where
   parseJSON = withText "Id" (return . Id)
 
-type UserId    = Id TUser
-type BotId     = Id TBot
-type ChannelId = Id TChannel
-type FileId    = Id TFile
-type CommentId = Id TComment
-type GroupId   = Id TGroup
-type IMId      = Id TIM
-type TeamId    = Id TTeam
+type UserId    = Id 'TUser
+type BotId     = Id 'TBot
+type ChannelId = Id 'TChannel
+type FileId    = Id 'TFile
+type CommentId = Id 'TComment
+type GroupId   = Id 'TGroup
+type IMId      = Id 'TIM
+type TeamId    = Id 'TTeam
 
 makeLenses ''Id

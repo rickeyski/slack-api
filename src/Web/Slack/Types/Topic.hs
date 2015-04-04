@@ -5,6 +5,7 @@ import Data.Aeson
 import Data.Text (Text)
 import Control.Applicative
 import Control.Lens.TH
+import Prelude
 
 type Purpose = Topic
 

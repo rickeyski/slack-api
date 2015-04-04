@@ -14,6 +14,7 @@ import Web.Slack.Types.IM
 import Web.Slack.Types.Bot
 import Data.Text (Text)
 import Control.Lens.TH
+import Prelude
 
 data SlackSession = SlackSession
                 { _slackSelf          :: Self

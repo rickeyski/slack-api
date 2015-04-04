@@ -11,6 +11,8 @@ import Data.Aeson
 import Control.Applicative
 import Control.Lens.TH
 
+import Prelude
+
 data Self = Self
           { _selfUserId         :: UserId
           , _selfName           :: Text

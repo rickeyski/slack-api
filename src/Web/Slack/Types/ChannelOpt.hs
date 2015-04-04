@@ -8,6 +8,8 @@ import Web.Slack.Types.Event
 import Web.Slack.Types.Time
 
 
+import Prelude
+
 data ChannelOpt = ChannelOpt
                 { _channelOptLastRead    :: SlackTimeStamp
                 , _channelOptUnreadCount :: Int

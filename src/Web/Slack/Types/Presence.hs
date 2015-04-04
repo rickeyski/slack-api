@@ -4,6 +4,7 @@ module Web.Slack.Types.Presence where
 import Data.Aeson
 import Control.Applicative
 import qualified Data.Text as T
+import Prelude
 
 data Presence = Away | Active deriving Show
 

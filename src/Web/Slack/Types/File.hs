@@ -14,6 +14,8 @@ import Web.Slack.Types.Comment
 import Web.Slack.Types.Time
 import Web.Slack.Types.Base
 
+import Prelude
+
 data File = File { _fileId             :: FileId
                  , _fileTimestamp      :: Time
                  , _fileName           :: Maybe Text
