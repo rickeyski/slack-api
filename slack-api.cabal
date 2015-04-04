@@ -28,7 +28,7 @@ source-repository head
 
 Library
   hs-source-dirs: src
-  ghc-options: -Wall -fno-warn-unused-do-bind -threaded
+  ghc-options: -Wall -fno-warn-unused-do-bind
   Exposed-Modules: Web.Slack,
                    Web.Slack.Message,
                    Web.Slack.State,
@@ -87,7 +87,7 @@ Library
 Test-Suite tests
     Type: exitcode-stdio-1.0
     Main-Is: tests-main.hs
-    ghc-options:   -threaded -Wall
+    ghc-options:   -Wall
     HS-Source-Dirs: tests .
     Build-Depends: slack-api, base
     Other-Modules: Tests.ConnectionTest
