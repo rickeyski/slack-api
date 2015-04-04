@@ -1,3 +1,11 @@
+## 0.4
+
+* Remove prefMacSsbBullet, prefWinSsbBullet and prefNoMacssb1Banner as they are
+no longer returned by the Slack API
+* Compatability changes for GHC 7.10
+* Make BotIcons optional
+
+
 ## 0.3
 
 * Change type of `teamIconDefault` to `Maybe Bool` in response to #4
