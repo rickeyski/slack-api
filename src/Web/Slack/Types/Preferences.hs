@@ -63,8 +63,6 @@ data Preferences = Preferences
                  , _prefCollapsible                     :: Bool
                  , _prefCollapsibleByClick              :: Bool
                  , _prefRequireAt                       :: Bool
-                 , _prefMacSsbBullet                    :: Bool
-                 , _prefWinSsbBullet                    :: Bool
                  , _prefExpandNonMediaAttachments       :: Bool
                  , _prefShowTyping                      :: Bool
                  , _prefPagekeysHandled                 :: Bool
@@ -93,7 +91,6 @@ data Preferences = Preferences
                  , _prefFullTextExtracts                :: Bool
                  , _prefNoTextInNotifications           :: Bool
                  , _prefMutedChannels                   :: Text
-                 , _prefNoMacssb1Banner                 :: Bool
                  , _prefPrivacyPolicySeen               :: Bool
                  , _prefSearchExcludeBots               :: Bool
                  , _prefFuzzyMatching                   :: Bool
@@ -102,7 +99,6 @@ data Preferences = Preferences
 
 $(deriveJSON defaultOptions {fieldLabelModifier = \case
                                                     "_prefTime24" -> "time24"
-                                                    "_prefNoMacssb1Banner" -> "no_macssb1_banner"
                                                     s -> toSnake . drop (length "_pref") $ s} ''Preferences)
 
 -- Bad performance regression from lens 4.6 causes GHC to run out of memory
