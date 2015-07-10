@@ -47,14 +47,8 @@ data Preferences = Preferences
                  , _prefNoJoinedOverlays                :: Bool
                  , _prefNoCreatedOverlays               :: Bool
                  , _prefDropboxEnabled                  :: Bool
-                 , _prefSeenUserMenuTipCard             :: Bool
-                 , _prefSeenTeamMenuTipCard             :: Bool
-                 , _prefSeenChannelMenuTipCard          :: Bool
-                 , _prefSeenMessageInputTipCard         :: Bool
-                 , _prefSeenChannelsTipCard             :: Bool
                  , _prefSeenDomainInviteReminder        :: Bool
                  , _prefSeenMemberInviteReminder        :: Bool
-                 , _prefSeenFlexpaneTipCard             :: Bool
                  , _prefMuteSounds                      :: Bool
                  , _prefArrowHistory                    :: Bool
                  , _prefTabUiReturnSelects              :: Bool
