@@ -116,6 +116,7 @@ runBot conf bot start = do
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
     let initMeta = Meta conn 0
+    WS.forkPingThread conn 10
     botLoop (partialState initMeta) bot
 
 botLoop :: forall s . SlackState s -> SlackBot s -> IO ()
