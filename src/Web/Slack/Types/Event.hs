@@ -89,6 +89,9 @@ data Event where
   MessageError :: Int -> SlackError -> Event
   StatusChange :: UserId -> Text -> SlackTimeStamp -> Event
   Pong :: Time -> Event
+  -- Unstable
+  PinAdded :: Event
+  PinRemoved :: Event
   NoEvent :: Event
   deriving (Show)
 
@@ -178,6 +181,8 @@ parseType o@(Object v) typ =
       "accounts_changed" -> pure AccountsChanged
       "status_change" -> StatusChange <$> v .: "user" <*> v .: "status" <*> v .: "event_ts"
       "pong" -> Pong <$> v .: "timestamp"
+      "pin_added" -> pure PinAdded
+      "pin_removed" -> pure PinRemoved
       _ -> fail $ "Unrecognised type: " <> T.unpack typ
 parseType _ _ = error "Expecting object"
 
