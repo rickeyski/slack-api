@@ -17,7 +17,7 @@ data Channel = Channel { _channelId         :: ChannelId
                        , _channelName       :: Text
                        , _channelCreated    :: Time
                        , _channelCreator    :: UserId
-                       , _channelIsArchived :: Bool
+                       , _channelIsArchived :: Maybe Bool
                        , _channelIsGeneral  :: Bool
                        , _channelMembers    :: Maybe [UserId]
                        , _channelTopic      :: Maybe Topic
@@ -31,7 +31,7 @@ makeLenses ''Channel
 instance FromJSON Channel where
   parseJSON = withObject "Channel" (\o -> Channel <$> o .: "id" <*> o .: "name"
                                                   <*> o .: "created" <*> o .:"creator"
-                                                  <*> o .: "is_archived" <*> o .: "is_general"
+                                                  <*> o .:? "is_archived" <*> o .: "is_general"
                                                   <*> o .:? "members" <*> o .:? "topic"
                                                   <*> o .:? "purpose" <*> o .: "is_member"
                                                   <*> (pure $ parseMaybe parseJSON (Object o) :: Parser (Maybe ChannelOpt)))
