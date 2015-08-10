@@ -133,5 +133,11 @@ botLoop st f =
                     liftIO $ BC.putStrLn raw
                     liftIO $ putStrLn e
                     liftIO . putStrLn $ "Please report this failure to the github issue tracker"
+        Right event@(UnknownEvent e) -> do
+                    liftIO . print $ e
+                    liftIO . putStrLn $ "Failed to parse to a known event"
+                    liftIO . putStrLn $ "Please report this failure to the github issue tracker"
+                    -- Still handle the event if a user wants to
+                    f event
         Right event -> f event
 

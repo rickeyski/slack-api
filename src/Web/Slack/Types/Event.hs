@@ -93,6 +93,8 @@ data Event where
   PinAdded :: Event
   PinRemoved :: Event
   NoEvent :: Event
+  -- Parsing failing of an event
+  UnknownEvent :: Value -> Event
   deriving (Show)
 
 type Pref = (Text, Value)
@@ -183,7 +185,7 @@ parseType o@(Object v) typ =
       "pong" -> Pong <$> v .: "timestamp"
       "pin_added" -> pure PinAdded
       "pin_removed" -> pure PinRemoved
-      _ -> fail $ "Unrecognised type: " <> T.unpack typ
+      _ -> return $ UnknownEvent o
 parseType _ _ = error "Expecting object"
 
 
