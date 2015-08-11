@@ -3,7 +3,7 @@
 {-# LANGUAGE LambdaCase                 #-}
 {-# LANGUAGE NoMonomorphismRestriction  #-}
 {-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE RecordWildCards            #-}
+
 {-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE TypeSynonymInstances       #-}
@@ -81,13 +81,13 @@ runBot conf bot start = do
   let Just url = r ^? responseBody . key "url" . _String
   (sessionInfo :: SlackSession) <-
     case eitherDecode (r ^. responseBody) of
-      Left e -> (print (r ^. responseBody)) >> (ioError . userError $ e)
+      Left e -> print (r ^. responseBody) >> (ioError . userError $ e)
       Right res -> return res
   let partialState :: Metainfo -> SlackState s
       partialState metainfo = SlackState metainfo sessionInfo start conf
   putStrLn "rtm.start call successful"
   case parseWebSocketUrl (T.unpack url) of
-    Just (host, path) -> do
+    Just (host, path) ->
       SSL.withOpenSSL $ do
         ctx <- SSL.context
         is  <- S.getAddrInfo Nothing (Just host) (Just $ show port)
