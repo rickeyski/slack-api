@@ -36,6 +36,11 @@ data Subtype where
   SFileShare :: File -> Bool -> Subtype
   SFileComment :: File -> Comment -> Subtype
   SFileMention :: File -> Subtype
+  -- These two subtypes are documented as unstable, so they shouldn't
+  -- be used.  See https://api.slack.com/events/message/pinned_item
+  -- for more detail and updates.
+  SPinnedItem :: Subtype
+  SUnpinnedItem :: Subtype
   deriving Show
 
 subtype :: String -> Value -> Parser Subtype
@@ -63,5 +68,7 @@ subtype s = withObject "subtype" (\v ->
     "file_share"    -> SFileShare <$> v .: "file" <*> v .: "upload"
     "file_comment"  -> SFileComment <$> v .: "file" <*> v .: "comment"
     "file_mention"  -> SFileMention <$> v .: "file"
+    "pinned_item"   -> pure SPinnedItem
+    "unpinned_item" -> pure SUnpinnedItem
     _               -> fail $ "Unrecognised subtype: " ++ s)
 
