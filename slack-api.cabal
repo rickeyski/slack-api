@@ -1,5 +1,5 @@
 Name:                slack-api
-Version:             0.5
+Version:             0.6
 Synopsis:            Bindings to the Slack RTM API.
 Description:         This library provides bindings to the <https://api.slack.com/rtm Slack Real Time Messaging API>.
                      Users should find it easy to program their own Slack bots using the functionality found in `Web.Slack`.
