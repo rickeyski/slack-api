@@ -18,7 +18,6 @@ data User = User
           { _userId         :: UserId
           , _userName       :: Text
           , _userDeleted    :: Bool
-          , _userStatus     :: Maybe Text
           , _userColor      :: Text
           , _userProfile    :: Profile
           , _userPermission :: Permissions
@@ -28,7 +27,7 @@ data User = User
 
 instance FromJSON User where
   parseJSON = withObject "User" (\o -> User <$> o .: "id" <*> o .: "name" <*> o .: "deleted"
-                                        <*> o .:? "status" <*> (o .:? "color" .!= "000000")
+                                        <*> (o .:? "color" .!= "000000")
                                         <*> o .: "profile" <*> (parseJSON (Object o) :: Parser Permissions)
                                         <*> fmap (fromMaybe False) (o .:? "has_files")
                                         <*> ((return $ fromMaybe defaultTimezone (parseMaybe parseJSON (Object o))) :: Parser Timezone))
