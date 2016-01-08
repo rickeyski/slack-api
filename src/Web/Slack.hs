@@ -41,11 +41,10 @@ module Web.Slack ( runBot
                  , module Web.Slack.Config
                  ) where
 
-import           Control.Applicative
+import           Control.Concurrent (forkIO)
 import           Control.Lens
-import Control.Monad (forever, unless)
+import           Control.Monad (forever, void, unless)
 import qualified Control.Monad.State        as S
-import           Control.Monad.Trans
 import           Data.Aeson.Lens
 import qualified Data.ByteString.Lazy       as B
 import qualified Data.ByteString.Lazy.Char8 as BC
@@ -120,24 +119,20 @@ mkBot partialState bot conn = do
     botLoop (partialState initMeta) bot
 
 botLoop :: forall s . SlackState s -> SlackBot s -> IO ()
-botLoop st f =
-  () <$ (flip S.runStateT st  . runSlack $ forever loop)
-  where
-    loop :: Slack s ()
-    loop = do
-      conn <- use connection
-      raw <- liftIO $ WS.receiveData conn
-      let (msg :: Either String Event) = eitherDecode raw
-      case msg of
-        Left e -> do
-                    liftIO $ BC.putStrLn raw
-                    liftIO $ putStrLn e
-                    liftIO . putStrLn $ "Please report this failure to the github issue tracker"
-        Right event@(UnknownEvent e) -> do
-                    liftIO . print $ e
-                    liftIO . putStrLn $ "Failed to parse to a known event"
-                    liftIO . putStrLn $ "Please report this failure to the github issue tracker"
-                    -- Still handle the event if a user wants to
-                    f event
-        Right event -> f event
-
+botLoop st bot = void $ forever loop
+ where
+  loop = do
+    raw <- WS.receiveData $ st ^. connection
+    case eitherDecode raw of
+      Left err -> do
+        BC.putStrLn raw
+        putStrLn err
+        putStrLn "Please report this failure to the github issue tracker"
+      Right event@(UnknownEvent e) -> do
+        print e
+        putStrLn "Failed to parse to a known event"
+        putStrLn "Please report this failure to the github issue tracker"
+        -- Still handle the event if a user wants to
+        go event
+      Right event -> go event
+  go = void . forkIO . void . flip S.runStateT st . runSlack . bot
