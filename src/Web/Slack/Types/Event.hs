@@ -89,6 +89,7 @@ data Event where
   MessageError :: Int -> SlackError -> Event
   StatusChange :: UserId -> Text -> SlackTimeStamp -> Event
   Pong :: Time -> Event
+  ReconnectUrl :: URL -> Event
   TeamMigrationStarted :: Event
   -- Unstable
   PinAdded :: Event
@@ -184,6 +185,7 @@ parseType o@(Object v) typ =
       "accounts_changed" -> pure AccountsChanged
       "status_change" -> StatusChange <$> v .: "user" <*> v .: "status" <*> v .: "event_ts"
       "pong" -> Pong <$> v .: "timestamp"
+      "reconnect_url" -> ReconnectUrl <$> v .: "url"
       "team_migration_started" -> pure TeamMigrationStarted
       "pin_added" -> pure PinAdded
       "pin_removed" -> pure PinRemoved
