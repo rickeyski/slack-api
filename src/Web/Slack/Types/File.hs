@@ -56,7 +56,7 @@ instance FromJSON File where
                 <*> o .: "channels" <*> o .: "groups" <*> o .:? "initial_comment"
                 <*> fmap (fromMaybe 0) (o .:? "num_stars") <*> o .: "comments_count" )
 instance FromJSON FileUrl where
-  parseJSON = withObject "FileURL" (\o -> URL <$> o .: "url" <*> o .: "url_download" <*> o .: "url_private" <*> o .: "url_private_download")
+  parseJSON = withObject "FileURL" (\o -> URL <$> o .: "url_private" <*> o .: "url_private_download")
 instance FromJSON Thumbnail where
   parseJSON = withObject "Thumbnail" (\o -> Thumbnail <$> o .:? "thumb_64" <*> o .:? "thumb_80" <*>  o .:? "thumb_360" <*> o .:? "thumb_360_gif" <*> o .:? "thumb_360_w" <*> o .:? "thumb_360_h")
 instance FromJSON Preview where
@@ -64,7 +64,7 @@ instance FromJSON Preview where
                                                    <*> o .: "lines"   <*> o .: "lines_more")
 
 data Preview = Preview { _previewText :: Text, _previewHighlight :: Text, _lines :: Int, _linesMore :: Int } deriving Show
-data FileUrl = URL { _access  :: Text,  _download :: Text, _private :: Text, _privateDownload :: Text } deriving Show
+data FileUrl = URL { _private :: Text, _privateDownload :: Text } deriving Show
 data Thumbnail = Thumbnail { _w64 :: Maybe URL, _w80 :: Maybe URL, _w360 :: Maybe URL, _w360gif :: Maybe URL, _width :: Maybe Int, _height :: Maybe Int} deriving Show
 
 makeLenses ''File
