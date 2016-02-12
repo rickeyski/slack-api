@@ -87,7 +87,7 @@ data Preferences = Preferences
                  , _prefMutedChannels                   :: Text
                  , _prefPrivacyPolicySeen               :: Bool
                  , _prefSearchExcludeBots               :: Bool
-                 , _prefFuzzyMatching                   :: Bool
+                 , _prefFuzzyMatching                   :: Maybe Bool
                  } deriving Show
 
 
