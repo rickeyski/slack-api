@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase, GADTs, OverloadedStrings #-}
+{-# LANGUAGE LambdaCase, GADTs, OverloadedStrings, TemplateHaskell #-}
 module Web.Slack.Types.Event.Subtype (Subtype(..), subtype) where
 
 import Data.Aeson
@@ -11,6 +11,7 @@ import Web.Slack.Types.Bot
 import Web.Slack.Types.Item
 import Control.Applicative
 import Data.Text (Text)
+import Control.Lens.TH
 
 type Username = Text
 
@@ -42,6 +43,8 @@ data Subtype where
   SPinnedItem :: Subtype
   SUnpinnedItem :: Subtype
   deriving Show
+
+makePrisms ''Subtype
 
 subtype :: String -> Value -> Parser Subtype
 subtype s = withObject "subtype" (\v ->

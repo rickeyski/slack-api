@@ -69,7 +69,7 @@ Library
     websockets > 0.9,
     wreq                      >= 0.2,
     text >= 1.2,
-    lens >= 4.6,
+    lens >= 4.8,
     lens-aeson >= 1.0 ,
     network >= 2.6,
     network-uri >= 2.6,

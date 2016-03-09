@@ -4,7 +4,7 @@ module Web.Slack.Types.Preferences where
 import           Data.Aeson.TH
 import Data.Text (Text)
 import           Web.Slack.Utils
---import Control.Lens.TH
+import Control.Lens.TH
 
 
 data Preferences = Preferences
@@ -97,5 +97,5 @@ $(deriveJSON defaultOptions {fieldLabelModifier = \case
 
 -- Bad performance regression from lens 4.6 causes GHC to run out of memory
 -- on compilation
---makeLenses ''Preferences
+makeLenses ''Preferences
 

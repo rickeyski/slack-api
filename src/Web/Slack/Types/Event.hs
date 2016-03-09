@@ -205,3 +205,5 @@ makeLenses ''ChannelRenameInfo
 instance FromJSON ChannelRenameInfo where
   parseJSON = withObject "ChannelRenameInfo" (\o -> ChannelRenameInfo <$> o .: "id" <*> o .: "name" <*> o .: "created")
 
+
+makePrisms ''Event
