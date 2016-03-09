@@ -44,7 +44,7 @@ data TeamPreferences = TeamPreferences
                      , _teamGroupRetentionDuration :: Int
                      , _teamDmRetentionType        :: Int
                      , _teamDmRetentionDuration    :: Int
-                     , _teamRequireAtForMention    :: Int
+                     , _teamRequireAtForMention    :: Bool
                      } deriving Show
 
 
