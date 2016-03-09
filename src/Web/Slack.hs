@@ -45,6 +45,7 @@ module Web.Slack ( runBot
 #if !MIN_VERSION_base(4,8,0)
 import           Control.Applicative
 #endif
+import           Control.Concurrent (newMVar)
 import           Control.Lens
 import           Control.Monad.Except
 import qualified Control.Monad.State        as S
@@ -87,7 +88,8 @@ runBot conf bot start = do
 
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
-    let initMeta = Meta conn 0
+    c <- newMVar 0
+    let initMeta = Meta conn c
     WS.forkPingThread conn 10
     botLoop (partialState initMeta) bot
 

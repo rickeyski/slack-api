@@ -10,6 +10,7 @@
 module Web.Slack.State where
 
 import           Control.Applicative
+import           Control.Concurrent
 import           Control.Lens
 import           Control.Monad.IO.Class
 import qualified Control.Monad.State       as S
@@ -25,11 +26,11 @@ type SlackBot s =  Event -> Slack s ()
 
 data Metainfo = Meta
               { _metaConnection :: WS.Connection -- ^ Websockets connection
-              , _msgCounter :: Int           -- ^ Unique message counter
+              , _msgCounter :: MVar Int          -- ^ Unique message counter
               }
 
 instance Show Metainfo where
-  show (Meta _ b) = "Metainfo: " ++ "<connection> " ++  show b
+  show (Meta _ b) = "Metainfo: " ++ "<connection> " ++ "<counter>"
 
 data SlackState s = SlackState
                 { _meta      :: Metainfo      -- ^ Information about the connection
@@ -46,8 +47,8 @@ makeLenses ''Metainfo
 slackLog :: Show a => a -> MonadIO m => m ()
 slackLog = liftIO . print
 
-counter :: Slack s Int
-counter = meta . msgCounter <<+= 1
+nextId :: MVar Int -> IO Int
+nextId c = modifyMVar c (\i -> return (i+1, i))
 
 connection :: Lens' (SlackState s) WS.Connection
 connection = meta . metaConnection
