@@ -1,3 +1,13 @@
+## 0.7
+
+* Add Prisms for `Event` and `Subevent`.
+* Add Lenses for `Preferences`
+* Remove _prefFuzzyMatching
+* Remove _teamRequireAtForMention
+* Add ReconnectUrl type
+* Remove deprecated FileUrl keys
+* Add TeamMigrationStarted event
+
 ## 0.6
 
 * Remove error call when an unknown message type is encountered.
