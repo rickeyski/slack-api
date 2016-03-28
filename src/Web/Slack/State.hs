@@ -33,7 +33,7 @@ instance Show Metainfo where
 
 data SlackState s = SlackState
                 { _meta      :: Metainfo      -- ^ Information about the connection
-                , _session   :: SlackSession  -- ^ Information about the session at the
+                , _session   :: Maybe SlackSession  -- ^ Information about the session at the
                                                   -- start of the connection
                 , _userState :: s             -- ^ User defined state
                 , _config    :: SlackConfig   -- ^ A copy of the initial configuration
