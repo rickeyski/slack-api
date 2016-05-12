@@ -54,7 +54,6 @@ data Preferences = Preferences
                  , _prefTabUiReturnSelects              :: Bool
                  , _prefObeyInlineImgLimit              :: Bool
                  , _prefNewMsgSnd                       :: Text
-                 , _prefCollapsibleByClick              :: Bool
                  , _prefRequireAt                       :: Bool
                  , _prefExpandNonMediaAttachments       :: Bool
                  , _prefShowTyping                      :: Bool
