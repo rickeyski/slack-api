@@ -1,3 +1,7 @@
+## 0.8
+
+* Remove *_prefCollapsible* from `Preferences` as it is sometimes not present.
+
 ## 0.7
 
 * Add Prisms for `Event` and `Subevent`.
