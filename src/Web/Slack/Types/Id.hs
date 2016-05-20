@@ -8,7 +8,7 @@ module Web.Slack.Types.Id
     GroupId,
     IMId,
     TeamId,
-    Id,
+    Id(..),
     getId
   ) where
 
