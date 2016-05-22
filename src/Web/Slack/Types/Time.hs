@@ -23,8 +23,13 @@ instance FromJSON SlackTimeStamp where
   parseJSON = withText "SlackTimeStamp"
                 (\s -> let (ts, tail -> uid) = break (== '.') (T.unpack s) in
                   SlackTimeStamp
-                    <$> fmap (Time . realToFrac) (readZ ts :: Parser Integer)
+                    <$> parseTimeString ts
                     <*> readZ uid)
 
 instance FromJSON Time where
-  parseJSON = withScientific "Time" (return . Time . realToFrac)
+  parseJSON (Number s) = return $ Time $ realToFrac s
+  parseJSON (String t) = parseTimeString $ T.unpack t
+  parseJSON _ = empty
+
+parseTimeString :: String -> Parser Time
+parseTimeString s = fmap (Time . realToFrac) (readZ s :: Parser Integer)
