@@ -36,7 +36,7 @@ data Event where
   ChannelMarked :: ChannelId -> SlackTimeStamp -> Event
   ChannelCreated :: Channel -> Event
   ChannelJoined :: Channel -> Event
-  ChannelLeft   :: Channel -> Event
+  ChannelLeft   :: ChannelId -> Event
   ChannelDeleted :: ChannelId -> Event
   ChannelRename :: ChannelRenameInfo -> Event
   ChannelArchive :: ChannelId -> UserId -> Event

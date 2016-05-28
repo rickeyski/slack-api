@@ -1,3 +1,8 @@
+## 0.9
+
+* Export `Id` constructors.
+* Expect a `ChannelId` rather than a `Channel` for `ChannelLeft` event
+
 ## 0.8
 
 * Remove *_prefCollapsible* from `Preferences` as it is sometimes not present.
