@@ -67,11 +67,12 @@ instance FromJSON Preview where
 
 data Preview = Preview { _previewText :: Text, _previewHighlight :: Text, _lines :: Int, _linesMore :: Int } deriving Show
 data FileUrl = URL { _private :: Text, _privateDownload :: Text } deriving Show
-data FileReference = FileReference { _id :: FileId } deriving Show
+data FileReference = FileReference { _fileReferenceId :: FileId } deriving Show
 data Thumbnail = Thumbnail { _w64 :: Maybe URL, _w80 :: Maybe URL, _w360 :: Maybe URL, _w360gif :: Maybe URL, _width :: Maybe Int, _height :: Maybe Int} deriving Show
 
 makeLenses ''File
 makeLenses ''FileUrl
+makeLenses ''FileReference
 makeLenses ''Thumbnail
 makeLenses ''Preview
 
