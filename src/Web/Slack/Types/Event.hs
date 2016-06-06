@@ -57,9 +57,9 @@ data Event where
   GroupMarked :: GroupId -> SlackTimeStamp -> Event
   GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
   FileCreated :: File -> Event
-  FileShared :: File -> Event
+  FileShared :: FileReference -> Event
   FileUnshared :: File -> Event
-  FilePublic :: File -> Event
+  FilePublic :: FileReference -> Event
   FilePrivate :: FileId -> Event
   FileChange  :: File -> Event
   FileDeleted :: FileId -> SlackTimeStamp -> Event
