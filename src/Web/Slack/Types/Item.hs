@@ -18,7 +18,7 @@ data Item = MessageItem ChannelId MessageUpdate
           | FileCommentItem File Comment
           | ChannelItem ChannelId
           | IMItem ChannelId
-          | GroupItem GroupId deriving Show
+          | GroupItem ChannelId deriving Show
 
 instance  FromJSON Item where
   parseJSON = withObject "item" (\o -> do

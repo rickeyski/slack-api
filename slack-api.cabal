@@ -42,7 +42,6 @@ Library
                    Web.Slack.Types.Channel,
                    Web.Slack.Types.Event,
                    Web.Slack.Types.Event.Subtype,
-                   Web.Slack.Types.Group,
                    Web.Slack.Types.Item,
                    Web.Slack.Types.User,
                    Web.Slack.Types.ChannelOpt,

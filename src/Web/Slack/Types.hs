@@ -6,7 +6,6 @@ module Web.Slack.Types (
  module Web.Slack.Types.Topic,
  module Web.Slack.Types.Channel,
  module Web.Slack.Types.Event.Subtype,
- module Web.Slack.Types.Group,
  module Web.Slack.Types.Item,
  module Web.Slack.Types.User,
  module Web.Slack.Types.ChannelOpt,
@@ -31,7 +30,6 @@ import Web.Slack.Types.IM
 import Web.Slack.Types.Topic
 import Web.Slack.Types.Channel
 import Web.Slack.Types.Event.Subtype
-import Web.Slack.Types.Group
 import Web.Slack.Types.Item
 import Web.Slack.Types.User
 import Web.Slack.Types.ChannelOpt
