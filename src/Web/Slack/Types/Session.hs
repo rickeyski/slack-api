@@ -9,7 +9,6 @@ import Web.Slack.Types.Time
 import Web.Slack.Types.Self
 import Web.Slack.Types.Team
 import Web.Slack.Types.Channel
-import Web.Slack.Types.Group
 import Web.Slack.Types.IM
 import Web.Slack.Types.Bot
 import Data.Text (Text)
@@ -22,7 +21,7 @@ data SlackSession = SlackSession
                 , _slackUsers         :: [User]
                 , _slackLatestEventTs :: SlackTimeStamp
                 , _slackChannels      :: [Channel]
-                , _slackGroups        :: [Group]
+                , _slackGroups        :: [Channel]
                 , _slackIms           :: [IM]
                 , _slackBots          :: [Bot]
                 , _slackCacheVersion  :: Text

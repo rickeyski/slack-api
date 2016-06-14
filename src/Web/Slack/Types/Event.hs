@@ -13,7 +13,6 @@ import Web.Slack.Types.Item
 import Web.Slack.Types.Comment
 import Web.Slack.Types.Error
 import Web.Slack.Types.Event.Subtype
-import Web.Slack.Types.Group
 import Web.Slack.Types.Time
 import Web.Slack.Types.Presence
 
@@ -47,14 +46,14 @@ data Event where
   ImClose :: UserId -> IMId -> Event
   ImMarked :: IMId -> SlackTimeStamp -> Event
   ImHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
-  GroupJoined :: Group -> Event
-  GroupLeft :: Group -> Event
-  GroupOpen :: UserId -> GroupId -> Event
-  GroupClose :: UserId -> GroupId -> Event
-  GroupArchive :: GroupId -> Event
-  GroupUnarchive :: GroupId -> Event
+  GroupJoined :: Channel -> Event
+  GroupLeft :: Channel -> Event
+  GroupOpen :: UserId -> ChannelId -> Event
+  GroupClose :: UserId -> ChannelId -> Event
+  GroupArchive :: ChannelId -> Event
+  GroupUnarchive :: ChannelId -> Event
   GroupRename :: ChannelRenameInfo -> Event
-  GroupMarked :: GroupId -> SlackTimeStamp -> Event
+  GroupMarked :: ChannelId -> SlackTimeStamp -> Event
   GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
   FileCreated :: File -> Event
   FileShared :: FileReference -> Event

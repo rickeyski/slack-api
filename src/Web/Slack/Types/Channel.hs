@@ -25,6 +25,7 @@ data Channel = Channel { _channelId         :: ChannelId
                        , _channelPurpose    :: Maybe Purpose
                        , _channelIsMember   :: Bool
                        , _channelOpt        :: Maybe ChannelOpt
+                       , _channelIsGroup    :: Bool
                        } deriving Show
 
 makeLenses ''Channel
@@ -38,4 +39,5 @@ instance FromJSON Channel where
                                                   <*> o .:? "is_archived" <*> defaultToFalse o "is_general"
                                                   <*> o .:? "members" <*> o .:? "topic"
                                                   <*> o .:? "purpose" <*> defaultToFalse o "is_member"
-                                                  <*> (pure $ parseMaybe parseJSON (Object o) :: Parser (Maybe ChannelOpt)))
+                                                  <*> (pure $ parseMaybe parseJSON (Object o) :: Parser (Maybe ChannelOpt))
+                                                  <*> o .:? "is_group" .!= False)
