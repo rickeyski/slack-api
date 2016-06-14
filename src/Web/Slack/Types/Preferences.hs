@@ -64,7 +64,6 @@ data Preferences = Preferences
                  , _prefEnterIsSpecialInTbt             :: Bool
                  , _prefGraphicEmoticons                :: Bool
                  , _prefConvertEmoticons                :: Bool
-                 , _prefAutoplayChatSounds              :: Bool
                  , _prefSsEmojis                        :: Bool
                  , _prefSidebarBehavior                 :: Text
                  , _prefMarkMsgsReadImmediately         :: Bool

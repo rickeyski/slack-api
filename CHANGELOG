@@ -3,6 +3,7 @@
 * Export `Id` constructors.
 * Expect a `ChannelId` rather than a `Channel` for `ChannelLeft` event
 * Remove Group in favour of Channel, a group is just a private channel.
+* Remove `_prefAutoplaySounds` field.
 
 ## 0.8
 
