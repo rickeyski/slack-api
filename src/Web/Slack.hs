@@ -53,18 +53,14 @@ import qualified Data.Text                  as T
 import qualified Network.Socket             as S
 import qualified Network.URI                as URI
 import qualified Network.WebSockets         as WS
-import qualified Network.WebSockets.Stream  as WS
 import           Network.Wreq
-import qualified OpenSSL                    as SSL
-import qualified OpenSSL.Session            as SSL
-import qualified System.IO.Streams.Internal as StreamsIO
-import qualified System.IO.Streams.SSL      as Streams
 
 import           Data.Aeson
 
 import           Web.Slack.Config
 import           Web.Slack.State
 import           Web.Slack.Types
+import           Wuss
 
 -- | Run a `SlackBot`. The supplied bot will respond to all events sent by
 -- the Slack RTM API.
@@ -88,22 +84,10 @@ runBot conf bot start = do
   putStrLn "rtm.start call successful"
   case parseWebSocketUrl (T.unpack url) of
     Just (host, path) ->
-      SSL.withOpenSSL $ do
-        ctx <- SSL.context
-        is  <- S.getAddrInfo Nothing (Just host) (Just $ show port)
-        let a = S.addrAddress $ head is
-            f = S.addrFamily $ head is
-        s <- S.socket f S.Stream S.defaultProtocol
-        S.connect s a
-        ssl <- SSL.connection ctx s
-        SSL.connect ssl
-        (i,o) <- Streams.sslToStreams ssl
-        (stream :: WS.Stream) <- WS.makeStream  (StreamsIO.read i) (\b -> StreamsIO.write (B.toStrict <$> b) o )
-        WS.runClientWithStream stream host path WS.defaultConnectionOptions []
-          (mkBot partialState bot)
+      runSecureClient host port path (mkBot partialState bot)
     Nothing -> error $ "Couldn't parse WebSockets URL: " ++ T.unpack url
   where
-    port = 443 :: Int
+    port = 443
     rtmStartUrl :: String
     rtmStartUrl = "https://slack.com/api/rtm.start?token="
                     ++ (conf ^. slackApiToken)
