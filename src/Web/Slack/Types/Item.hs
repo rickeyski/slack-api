@@ -18,15 +18,22 @@ data Item = MessageItem ChannelId MessageUpdate
           | FileCommentItem File Comment
           | ChannelItem ChannelId
           | IMItem ChannelId
-          | GroupItem ChannelId deriving Show
+          | GroupItem ChannelId
+          | EmbeddedMessageItem ChannelId SlackTimeStamp
+          | EmbeddedFileItem FileId
+          | EmbeddedFileCommentItem FileId CommentId
+          deriving Show
 
 instance  FromJSON Item where
   parseJSON = withObject "item" (\o -> do
                 (typ :: String) <- o .: "type"
                 case typ of
-                  "message" -> MessageItem <$> o .: "channel" <*> o .: "message"
-                  "file" -> FileItem <$> o .: "file"
-                  "file_comment" -> FileCommentItem <$> o .: "file" <*> o .: "comment"
+                  "message" -> (MessageItem <$> o .: "channel" <*> o .: "message") <|>
+                               (EmbeddedMessageItem <$> o .: "channel" <*> o .: "ts")
+                  "file"    -> (FileItem <$> o .: "file") <|>
+                               (EmbeddedFileItem <$> o .: "file")
+                  "file_comment" -> (FileCommentItem <$> o .: "file" <*> o .: "comment") <|>
+                                    (EmbeddedFileCommentItem <$> o .: "file" <*> o .: "file_comment")
                   "channel" -> ChannelItem <$> o .: "channel"
                   "im"      -> IMItem <$> o .: "channel"
                   "group"   -> GroupItem <$> o .: "group"
