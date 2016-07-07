@@ -69,7 +69,7 @@ data Event where
   PrefChange :: Pref -> Event
   UserChange :: User -> Event
   TeamJoin :: User -> Event
-  ReactionAdded :: UserId -> Maybe Text -> Item -> SlackTimeStamp -> Event
+  ReactionAdded :: UserId -> Text -> UserId {- item author -} -> Item -> SlackTimeStamp -> Event
   ReactionRemoved :: UserId -> Maybe Text -> Item -> SlackTimeStamp -> Event
   StarAdded :: UserId -> Item -> SlackTimeStamp -> Event
   StarRemoved :: UserId -> Item -> SlackTimeStamp -> Event
@@ -168,7 +168,7 @@ parseType o@(Object v) typ =
       "pref_change" -> curry PrefChange <$> v .: "name" <*> v .: "value"
       "user_change" -> UserChange <$> v .: "user"
       "team_join"   -> TeamJoin <$> v .: "user"
-      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
+      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .: "reaction" <*> v .: "item_user" <*> v .: "item" <*> v .: "event_ts"
       "reaction_removed" -> ReactionRemoved <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
       "star_added" ->  StarAdded <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
       "star_removed" -> StarRemoved <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
