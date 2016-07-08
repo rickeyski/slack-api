@@ -7,6 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE TypeSynonymInstances       #-}
+{-# LANGUAGE CPP                        #-}
 ------------------------------------------
 -- |
 -- This module exposes functionality to write bots which responds
@@ -41,16 +42,16 @@ module Web.Slack ( runBot
                  , module Web.Slack.Config
                  ) where
 
+#if !MIN_VERSION_base(4,8,0)
 import           Control.Applicative
+#endif
 import           Control.Lens
 import Control.Monad (forever, unless)
 import qualified Control.Monad.State        as S
 import           Control.Monad.Trans
 import           Data.Aeson.Lens
-import qualified Data.ByteString.Lazy       as B
 import qualified Data.ByteString.Lazy.Char8 as BC
 import qualified Data.Text                  as T
-import qualified Network.Socket             as S
 import qualified Network.URI                as URI
 import qualified Network.WebSockets         as WS
 import           Network.Wreq
