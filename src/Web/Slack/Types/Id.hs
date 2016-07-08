@@ -1,4 +1,4 @@
-{-# LANGUAGE DataKinds, KindSignatures, TemplateHaskell #-}
+{-# LANGUAGE DataKinds, KindSignatures, TemplateHaskell, DeriveGeneric #-}
 module Web.Slack.Types.Id
   ( UserId,
     BotId,
@@ -14,10 +14,12 @@ module Web.Slack.Types.Id
 import Data.Aeson
 import Data.Text (Text)
 import Control.Lens.TH
+import Data.Hashable
+import GHC.Generics
 
 data FieldType = TUser | TBot | TChannel | TFile | TComment | TIM | TTeam deriving (Eq, Show)
 
-newtype Id (a :: FieldType) = Id { _getId :: Text } deriving (Show, Eq, Ord)
+newtype Id (a :: FieldType) = Id { _getId :: Text } deriving (Show, Eq, Ord, Generic)
 
 
 instance ToJSON (Id a) where
@@ -25,6 +27,8 @@ instance ToJSON (Id a) where
 
 instance FromJSON (Id a) where
   parseJSON = withText "Id" (return . Id)
+
+instance Hashable (Id a)
 
 type UserId    = Id 'TUser
 type BotId     = Id 'TBot
