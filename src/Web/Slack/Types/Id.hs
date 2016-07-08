@@ -17,7 +17,7 @@ import Control.Lens.TH
 
 data FieldType = TUser | TBot | TChannel | TFile | TComment | TIM | TTeam deriving (Eq, Show)
 
-newtype Id (a :: FieldType) = Id { _getId :: Text } deriving (Show, Eq)
+newtype Id (a :: FieldType) = Id { _getId :: Text } deriving (Show, Eq, Ord)
 
 
 instance ToJSON (Id a) where
