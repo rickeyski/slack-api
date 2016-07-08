@@ -3,6 +3,7 @@ module Web.Slack.Types.IM where
 
 import Data.Aeson
 import Data.Aeson.Types
+import Data.Coerce
 import Control.Applicative
 import Control.Lens.TH
 
@@ -30,3 +31,9 @@ instance FromJSON IM where
                 <*> o .: "is_open"
                 <*> o .: "is_im"
                 <*> (pure $ parseMaybe parseJSON (Object o) :: Parser (Maybe ChannelOpt)))
+
+imToChannel :: IMId -> ChannelId
+imToChannel = coerce
+
+channelToIM :: ChannelId -> IMId
+channelToIM = coerce
