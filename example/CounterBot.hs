@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell, CPP #-}
-module CounterBot where
+module Main where
 
 import qualified Data.Text as T (pack)
 

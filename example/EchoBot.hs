@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 
-module EchoBot where
+module Main where
 
 import Web.Slack
 import Web.Slack.Message
