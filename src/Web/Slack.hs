@@ -55,8 +55,7 @@ import qualified Network.URI                as URI
 import qualified Network.WebSockets         as WS
 import           Network.Wreq
 
-import           Data.Aeson hiding  (eitherDecode)
-import           Data.Aeson.Coerce
+import           Data.Aeson
 
 import           Web.Slack.Config
 import           Web.Slack.State
@@ -77,7 +76,7 @@ runBot conf bot start = do
     ioError . userError . T.unpack $ r ^. responseBody . key "error" . _String)
   let Just url = r ^? responseBody . key "url" . _String
   (sessionInfo :: SlackSession) <-
-    case eitherDecode fixRetentionType (r ^. responseBody) of
+    case eitherDecode (r ^. responseBody) of
       Left e -> print (r ^. responseBody) >> (ioError . userError $ e)
       Right res -> return res
   let partialState :: Metainfo -> SlackState s
@@ -97,11 +96,6 @@ runBot conf bot start = do
       uri  <- URI.parseURI url
       name <- URI.uriRegName <$> URI.uriAuthority uri
       return (name, URI.uriPath uri)
-    -- correct "1" to 1 for retention_type keys.
-    -- the json slack hands out doesn't adhere to types.
-    fixRetentionType = ((key "team" . key "prefs" . key "retention_type") `over` asNumber)
-      . ((key "team" . key "prefs" . key "group_retention_type") `over` asNumber)
-      . ((key "team" . key "prefs" . key "dm_retention_type") `over` asNumber)
 
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
@@ -117,7 +111,7 @@ botLoop st f =
     loop = do
       conn <- use connection
       raw <- liftIO $ WS.receiveData conn
-      let (msg :: Either String Event) = eitherDecode id raw
+      let (msg :: Either String Event) = eitherDecode raw
       case msg of
         Left e -> do
                     liftIO $ BC.putStrLn raw
