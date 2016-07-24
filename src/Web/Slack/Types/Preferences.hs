@@ -29,7 +29,6 @@ data Preferences = Preferences
                  , _prefLoudChannels                    :: Text
                  , _prefNeverChannels                   :: Text
                  , _prefLoudChannelsSet                 :: Text
-                 , _prefShowMemberPresence              :: Bool
                  , _prefSearchSort                      :: Text
                  , _prefExpandInlineImgs                :: Bool
                  , _prefExpandSnippets                  :: Bool
