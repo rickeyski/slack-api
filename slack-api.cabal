@@ -31,7 +31,6 @@ library
   ghc-options: -Wall -fno-warn-unused-do-bind
   exposed-modules:
       Web.Slack
-    , Web.Slack.Config
     , Web.Slack.Message
     , Web.Slack.State
     , Web.Slack.Types
@@ -57,6 +56,7 @@ library
     , Web.Slack.Types.Time
     , Web.Slack.Types.Topic
     , Web.Slack.Types.User
+    , Web.Slack.WebAPI
   other-modules: Web.Slack.Utils
   build-depends:
       -- corePackages (see [cabal2nix/src/Cabal2Nix/CorePackages.hs])
