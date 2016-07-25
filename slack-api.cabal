@@ -54,7 +54,8 @@ library
                    Web.Slack.Types.Session,
                    Web.Slack.Types.Self,
                    Web.Slack.Types.Presence,
-                   Web.Slack.Types.Base
+                   Web.Slack.Types.Base,
+                   Web.Slack.Types.Message
 
   other-modules: Web.Slack.Utils
   Build-depends:

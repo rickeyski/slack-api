@@ -19,7 +19,8 @@ module Web.Slack.Types (
  module Web.Slack.Types.Self,
  module Web.Slack.Types.Session,
  module Web.Slack.Types.Presence,
- module Web.Slack.Types.Base
+ module Web.Slack.Types.Base,
+ module Web.Slack.Types.Message
  ) where
 
 import Web.Slack.Types.Base
@@ -43,3 +44,4 @@ import Web.Slack.Types.Team
 import Web.Slack.Types.Self
 import Web.Slack.Types.Session
 import Web.Slack.Types.Presence
+import Web.Slack.Types.Message
