@@ -65,6 +65,7 @@ library
     , containers >= 0.4
       -- Normal Packages
     , aeson >= 0.8
+    , data-default-class >= 0.0.1
     , errors >= 1.4 && < 3.0
     , hashable >= 1.2
     , io-streams >= 1.2

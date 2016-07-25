@@ -8,13 +8,16 @@ module Web.Slack.WebAPI
 
       -- * Methods
     , rtm_start
+    , chat_postMessage
     ) where
 
 import Control.Lens hiding ((??))
 import Control.Monad.Except
 import Data.Aeson
 import Data.Aeson.Lens
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import qualified Network.Wreq as W
 import Web.Slack.Types
 
@@ -57,8 +60,25 @@ rtm_start conf = do
     sessionInfo <- fromJSON' resp
     return (url, sessionInfo)
 
+chat_postMessage
+    :: (MonadError T.Text m, MonadIO m)
+    => SlackConfig
+    -> ChannelId
+    -> T.Text
+    -> [Attachment]
+    -> m ()
+chat_postMessage conf (Id cid) msg as =
+    void $ makeSlackCall conf "chat.postMessage" $
+        (W.param "channel"     .~ [cid]) .
+        (W.param "text"        .~ [msg]) .
+        (W.param "attachments" .~ [encode' as]) .
+        (W.param "as_user"     .~ ["true"])
+
 -------------------------------------------------------------------------------
 -- Helpers
+
+encode' :: ToJSON a => a -> T.Text
+encode' = T.decodeUtf8 . BL.toStrict . encode
 
 fromJSON' :: (FromJSON a, MonadError T.Text m) => Value -> m a
 fromJSON' x = case fromJSON x of
