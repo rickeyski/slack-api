@@ -6,7 +6,6 @@ module Web.Slack.Types.Message where
 
 import Data.Aeson
 import Data.Aeson.TH
-import Data.Default.Class
 import qualified Data.Text as T
 import Data.Time.Clock.POSIX
 import GHC.Generics
@@ -88,8 +87,8 @@ data AttachmentColor
     | CustomColor T.Text -- hexadecimal RGB colour, eg. CustomColor "#439FE0"
     deriving (Generic)
 
-instance Default Attachment where
-    def = Attachment
+defaultAttachment :: Attachment
+defaultAttachment = Attachment
         { attachmentFallback = ""
         , attachmentColor = DefaultColor
         , attachmentPretext = Nothing
