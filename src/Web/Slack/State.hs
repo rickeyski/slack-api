@@ -15,7 +15,7 @@ import           Control.Monad.IO.Class
 import qualified Control.Monad.State       as S
 import qualified Network.WebSockets        as WS
 import           Web.Slack.Types
-import           Web.Slack.Config
+import           Web.Slack.WebAPI (SlackConfig)
 import Prelude
 
 newtype Slack s a = Slack {runSlack :: S.StateT (SlackState s) IO a}

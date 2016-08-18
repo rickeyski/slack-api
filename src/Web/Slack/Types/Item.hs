@@ -20,6 +20,12 @@ data Item = MessageItem ChannelId MessageUpdate
           | IMItem ChannelId
           | GroupItem ChannelId deriving Show
 
+data EmbeddedItem
+          = EmbeddedMessageItem ChannelId SlackTimeStamp
+          | EmbeddedFileItem FileId
+          | EmbeddedFileCommentItem FileId CommentId
+          deriving Show
+
 instance  FromJSON Item where
   parseJSON = withObject "item" (\o -> do
                 (typ :: String) <- o .: "type"
@@ -31,6 +37,15 @@ instance  FromJSON Item where
                   "im"      -> IMItem <$> o .: "channel"
                   "group"   -> GroupItem <$> o .: "group"
                   _         -> fail $ "Unrecognised item type: " ++ typ)
+
+instance FromJSON EmbeddedItem where
+  parseJSON = withObject "item" $ \o -> do
+                (typ :: String) <- o .: "type"
+                case typ of
+                  "message"      -> EmbeddedMessageItem <$> o .: "channel" <*> o .: "ts"
+                  "file"         -> EmbeddedFileItem <$> o .: "file"
+                  "file_comment" -> EmbeddedFileCommentItem <$> o .: "file" <*> o .: "file_comment"
+                  _              -> fail $ "Unrecognised item type: " ++ typ
 
 data MessageUpdate = MessageUpdate
                    { _messageUpdateUser   :: UserId

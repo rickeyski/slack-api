@@ -21,9 +21,8 @@ import Data.Aeson.Types
 
 import Control.Lens.TH
 import Control.Applicative
+import Control.Monad
 import Data.Text (Text)
-import qualified Data.Text as T
-import Data.Monoid
 import Prelude
 
 type Domain = Text
@@ -70,8 +69,8 @@ data Event where
   PrefChange :: Pref -> Event
   UserChange :: User -> Event
   TeamJoin :: User -> Event
-  ReactionAdded :: UserId -> Maybe Text -> Item -> SlackTimeStamp -> Event
-  ReactionRemoved :: UserId -> Maybe Text -> Item -> SlackTimeStamp -> Event
+  ReactionAdded :: UserId -> Text -> UserId {- item author -} -> EmbeddedItem -> SlackTimeStamp -> Event
+  ReactionRemoved :: UserId -> Maybe Text -> EmbeddedItem -> SlackTimeStamp -> Event
   StarAdded :: UserId -> Item -> SlackTimeStamp -> Event
   StarRemoved :: UserId -> Item -> SlackTimeStamp -> Event
   EmojiChanged :: SlackTimeStamp -> Event
@@ -125,7 +124,7 @@ parseType o@(Object v) typ =
         submitter <- case subt of
                       Just (SBotMessage bid _ _) -> return $ BotComment bid
                       _ -> maybe System UserComment <$> v .:? "user"
-        (v .: "channel") :: Parser ChannelId
+        void $ (v .: "channel" :: Parser ChannelId)
         hidden <- (\case {Just True -> True; _ -> False}) <$> v .:? "hidden"
         if not hidden
           then Message <$>  v .: "channel" <*> pure submitter  <*> v .: "text" <*> v .: "ts" <*> pure subt <*> v .:? "edited"
@@ -169,7 +168,7 @@ parseType o@(Object v) typ =
       "pref_change" -> curry PrefChange <$> v .: "name" <*> v .: "value"
       "user_change" -> UserChange <$> v .: "user"
       "team_join"   -> TeamJoin <$> v .: "user"
-      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
+      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .: "reaction" <*> v .: "item_user" <*> v .: "item" <*> v .: "event_ts"
       "reaction_removed" -> ReactionRemoved <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
       "star_added" ->  StarAdded <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
       "star_removed" -> StarRemoved <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"

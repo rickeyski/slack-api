@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell #-}
-module CounterBot where
+{-# LANGUAGE TemplateHaskell, CPP #-}
+module Main where
 
 import qualified Data.Text as T (pack)
 
@@ -8,7 +8,9 @@ import Web.Slack.Message
 
 import System.Environment (lookupEnv)
 import Data.Maybe (fromMaybe)
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 
 import Control.Lens
 

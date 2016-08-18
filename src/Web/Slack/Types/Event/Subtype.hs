@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase, GADTs, OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE LambdaCase, GADTs, OverloadedStrings, TemplateHaskell, CPP #-}
 module Web.Slack.Types.Event.Subtype (Subtype(..), subtype) where
 
 import Data.Aeson
@@ -9,7 +9,9 @@ import Web.Slack.Types.File hiding (URL)
 import Web.Slack.Types.Comment
 import Web.Slack.Types.Bot
 import Web.Slack.Types.Item
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 import Data.Text (Text)
 import Control.Lens.TH
 

@@ -1,10 +1,14 @@
-module EchoBot where
+{-# LANGUAGE CPP #-}
+
+module Main where
 
 import Web.Slack
 import Web.Slack.Message
 import System.Environment (lookupEnv)
 import Data.Maybe (fromMaybe)
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 
 myConfig :: String -> SlackConfig
 myConfig apiToken = SlackConfig

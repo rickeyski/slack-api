@@ -7,6 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE TypeSynonymInstances       #-}
+{-# LANGUAGE CPP                        #-}
 ------------------------------------------
 -- |
 -- This module exposes functionality to write bots which responds
@@ -38,28 +39,25 @@ module Web.Slack ( runBot
                  , userState
                  , session
                  , module Web.Slack.Types
-                 , module Web.Slack.Config
+                 , SlackConfig(..)
                  ) where
 
+#if !MIN_VERSION_base(4,8,0)
 import           Control.Applicative
+#endif
 import           Control.Lens
-import Control.Monad (forever, unless)
+import           Control.Monad.Except
 import qualified Control.Monad.State        as S
-import           Control.Monad.Trans
-import           Data.Aeson.Lens
-import qualified Data.ByteString.Lazy       as B
 import qualified Data.ByteString.Lazy.Char8 as BC
 import qualified Data.Text                  as T
-import qualified Network.Socket             as S
 import qualified Network.URI                as URI
 import qualified Network.WebSockets         as WS
-import           Network.Wreq
 
 import           Data.Aeson
 
-import           Web.Slack.Config
 import           Web.Slack.State
 import           Web.Slack.Types
+import           Web.Slack.WebAPI
 import           Wuss
 
 -- | Run a `SlackBot`. The supplied bot will respond to all events sent by
@@ -69,16 +67,7 @@ import           Wuss
 -- to the Slack API fails.
 runBot :: forall s . SlackConfig -> SlackBot s -> s -> IO ()
 runBot conf bot start = do
-  r <- get rtmStartUrl
-  let Just (BoolPrim ok) = r ^? responseBody . key "ok"  . _Primitive
-  unless ok (do
-    putStrLn "Unable to connect"
-    ioError . userError . T.unpack $ r ^. responseBody . key "error" . _String)
-  let Just url = r ^? responseBody . key "url" . _String
-  (sessionInfo :: SlackSession) <-
-    case eitherDecode (r ^. responseBody) of
-      Left e -> print (r ^. responseBody) >> (ioError . userError $ e)
-      Right res -> return res
+  (url, sessionInfo) <- crashOnError $ rtm_start conf
   let partialState :: Metainfo -> SlackState s
       partialState metainfo = SlackState metainfo sessionInfo start conf
   putStrLn "rtm.start call successful"
@@ -88,14 +77,13 @@ runBot conf bot start = do
     Nothing -> error $ "Couldn't parse WebSockets URL: " ++ T.unpack url
   where
     port = 443
-    rtmStartUrl :: String
-    rtmStartUrl = "https://slack.com/api/rtm.start?token="
-                    ++ (conf ^. slackApiToken)
     parseWebSocketUrl :: String -> Maybe (String, String)
     parseWebSocketUrl url = do
       uri  <- URI.parseURI url
       name <- URI.uriRegName <$> URI.uriAuthority uri
       return (name, URI.uriPath uri)
+    crashOnError :: ExceptT T.Text IO a -> IO a
+    crashOnError = either (ioError . userError . T.unpack) return <=< runExceptT
 
 mkBot :: (Metainfo -> SlackState s) -> SlackBot s -> WS.ClientApp ()
 mkBot partialState bot conn = do
