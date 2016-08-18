@@ -69,8 +69,8 @@ data Event where
   PrefChange :: Pref -> Event
   UserChange :: User -> Event
   TeamJoin :: User -> Event
-  ReactionAdded :: UserId -> Text -> UserId {- item author -} -> Item -> SlackTimeStamp -> Event
-  ReactionRemoved :: UserId -> Maybe Text -> Item -> SlackTimeStamp -> Event
+  ReactionAdded :: UserId -> Text -> UserId {- item author -} -> EmbeddedItem -> SlackTimeStamp -> Event
+  ReactionRemoved :: UserId -> Maybe Text -> EmbeddedItem -> SlackTimeStamp -> Event
   StarAdded :: UserId -> Item -> SlackTimeStamp -> Event
   StarRemoved :: UserId -> Item -> SlackTimeStamp -> Event
   EmojiChanged :: SlackTimeStamp -> Event
