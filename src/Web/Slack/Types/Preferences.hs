@@ -50,7 +50,6 @@ data Preferences = Preferences
                  , _prefSeenMemberInviteReminder        :: Bool
                  , _prefMuteSounds                      :: Bool
                  , _prefArrowHistory                    :: Bool
-                 , _prefTabUiReturnSelects              :: Bool
                  , _prefObeyInlineImgLimit              :: Bool
                  , _prefNewMsgSnd                       :: Text
                  , _prefRequireAt                       :: Bool
