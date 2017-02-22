@@ -72,9 +72,6 @@ data Preferences = Preferences
                  , _prefSidebarThemeCustomValues        :: Text
                  , _prefFKeySearch                      :: Bool
                  , _prefKKeyOmnibox                     :: Bool
-                 , _prefSpeakGrowls                     :: Bool
-                 , _prefMacSpeakVoice                   :: Text
-                 , _prefMacSpeakSpeed                   :: Int
                  , _prefPushAtChannelSuppressedChannels :: Text
                  , _prefPromptedForEmailDisabling       :: Bool
                  , _prefFullTextExtracts                :: Bool
@@ -92,4 +89,3 @@ $(deriveJSON defaultOptions {fieldLabelModifier = \case
 -- Bad performance regression from lens 4.6 causes GHC to run out of memory
 -- on compilation
 makeLenses ''Preferences
-
