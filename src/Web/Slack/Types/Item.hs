@@ -14,8 +14,8 @@ import Control.Lens.TH
 import Prelude
 
 data Item = MessageItem ChannelId MessageUpdate
-          | FileItem File
-          | FileCommentItem File Comment
+          | FileItem FileId
+          | FileCommentItem FileId CommentId
           | ChannelItem ChannelId
           | IMItem ChannelId
           | GroupItem ChannelId deriving Show
@@ -32,7 +32,7 @@ instance  FromJSON Item where
                 case typ of
                   "message" -> MessageItem <$> o .: "channel" <*> o .: "message"
                   "file" -> FileItem <$> o .: "file"
-                  "file_comment" -> FileCommentItem <$> o .: "file" <*> o .: "comment"
+                  "file_comment" -> FileCommentItem <$> o .: "file" <*> o .: "file_comment"
                   "channel" -> ChannelItem <$> o .: "channel"
                   "im"      -> IMItem <$> o .: "channel"
                   "group"   -> GroupItem <$> o .: "group"
