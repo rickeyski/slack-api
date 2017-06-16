@@ -1,6 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module Web.Slack.Types.Message where
 
@@ -8,7 +7,6 @@ import Data.Aeson
 import Data.Aeson.TH
 import qualified Data.Text as T
 import Data.Time.Clock.POSIX
-import GHC.Generics
 import Web.Slack.Types.Base
 import Web.Slack.Types.Id
 import Web.Slack.Utils
@@ -85,7 +83,6 @@ data AttachmentColor
     | WarningColor       -- yellow
     | DangerColor        -- red
     | CustomColor T.Text -- hexadecimal RGB colour, eg. CustomColor "#439FE0"
-    deriving (Generic)
 
 defaultAttachment :: Attachment
 defaultAttachment = Attachment
@@ -107,7 +104,7 @@ defaultAttachment = Attachment
         }
 
 instance ToJSON AttachmentColor where
-    toEncoding x = toEncoding $ case x of
+    toJSON x = toJSON $ case x of
         DefaultColor  -> Nothing
         GoodColor     -> Just "good"
         WarningColor  -> Just "warning"
