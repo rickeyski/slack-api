@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Changed `newtype Time = Time NominalDiffTime` to `newtype Time = Time Int`
+* Changed the fundamental abstraction from SlackBot to SlackHandle
 
 ## 0.12
 
