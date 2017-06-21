@@ -1,7 +1,8 @@
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 -- | Bindings to the various Slack APIs, for writing chat bots.
 --
@@ -89,7 +90,7 @@ withSlackHandle conf fn = crashOnError $ do
     (url, sessionInfo) <- rtm_start conf
     (host, path) <- parseWebSocketUrl url
     liftIO $ runSecureClient host 443 path $ \conn -> do
-        freshCounter <- newIORef 0
+        freshCounter <- newIORef 1
         let h = SlackHandle
               { _shConfig = conf
               , _shConnection = conn
@@ -149,9 +150,8 @@ getNextEvent h@SlackHandle{..} = do
             return event
 
 nextMessageId :: SlackHandle -> IO Int
-nextMessageId SlackHandle{..} = do
-    liftIO $ modifyIORef _shCounter (+1)
-    liftIO $ readIORef _shCounter
+nextMessageId SlackHandle{_shCounter} =
+    atomicModifyIORef' _shCounter (\n -> (n+1, n))
 
 -- | Post a simple message to the specified channel. From the slack docs:
 --
