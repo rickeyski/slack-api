@@ -104,3 +104,32 @@ executable example_counterbot
     hs-source-dirs:      example
     main-is:             CounterBot.hs
     build-depends:       base, slack-api, text, mtl, lens
+
+executable example_timerbot
+    default-language:    Haskell2010
+    ghc-options:         -Wall -threaded
+    hs-source-dirs:      example
+    main-is:             TimerBot.hs
+    build-depends:       base, slack-api, text, transformers
+
+
+executable example_richmessagebot
+    default-language:    Haskell2010
+    ghc-options:         -Wall -threaded
+    hs-source-dirs:      example
+    main-is:             RichMessageBot.hs
+    build-depends:       base, slack-api, text, transformers
+
+executable example_pipebot
+    default-language:    Haskell2010
+    ghc-options:         -Wall -threaded
+    hs-source-dirs:      example
+    main-is:             PipeBot.hs
+    build-depends:       base, slack-api, text, transformers, pipes
+
+executable example_managedbot
+    default-language:    Haskell2010
+    ghc-options:         -Wall -threaded
+    hs-source-dirs:      example
+    main-is:             ManagedBot.hs
+    build-depends:       base, slack-api, text, transformers, pipes, managed
