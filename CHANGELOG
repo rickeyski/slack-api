@@ -1,3 +1,7 @@
+## Unreleased
+
+* Changed type of _teamIconDefault from `Maybe Bool` to `Maybe Text`
+
 ## 0.12
 
 * Remove _prefSpeakGrowls, _prefMacSpeakVoice, _prefMacSpeakSpeed

@@ -28,7 +28,7 @@ data TeamIcons = TeamIcons
                , _teamIcon88      :: URL
                , _teamIcon102     :: URL
                , _teamIcon132     :: URL
-               , _teamIconDefault :: Maybe String
+               , _teamIconDefault :: Maybe Text
                } deriving Show
 
 makeLenses ''Team
