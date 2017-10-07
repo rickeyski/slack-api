@@ -2,12 +2,13 @@
 module Web.Slack.Types.Time where
 
 import Data.Aeson
+import Data.Aeson.Encoding
 import Data.Aeson.Types
 import Data.Scientific (floatingOrInteger)
 import qualified Data.Text as T
 import Control.Applicative
 import Control.Error
-import Control.Lens.TH
+import Control.Lens
 
 default ()
 
@@ -31,10 +32,21 @@ instance FromJSON SlackTimeStamp where
 instance FromJSON Time where
   parseJSON (Number s) =
     case floatingOrInteger s :: Either Float Int of
-      Left _ -> error "Time.FromJSON: non-integer unix timestamp"
+      Left _ -> fail "Time.FromJSON: non-integer unix timestamp"
       Right n -> return $ Time n
   parseJSON (String t) = parseTimeString $ T.unpack t
   parseJSON _ = empty
 
 parseTimeString :: String -> Parser Time
 parseTimeString s = Time <$> readZ s
+
+instance ToJSON SlackTimeStamp where
+  toJSON = String . formatSlackTimeStamp
+  toEncoding = text . formatSlackTimeStamp
+
+formatSlackTimeStamp :: SlackTimeStamp -> T.Text
+formatSlackTimeStamp sts = T.pack timeString where
+  timeString = mconcat [ sts ^. slackTime . getTime . to show
+                       , "."
+                       , sts ^. timestampUid . to show
+                       ]
