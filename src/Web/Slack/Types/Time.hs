@@ -1,9 +1,9 @@
 {-# LANGUAGE ViewPatterns, GeneralizedNewtypeDeriving, TemplateHaskell #-}
 module Web.Slack.Types.Time where
 
-import Data.Time.Clock.POSIX
 import Data.Aeson
 import Data.Aeson.Types
+import Data.Scientific (floatingOrInteger)
 import qualified Data.Text as T
 import Control.Applicative
 import Control.Error
@@ -11,9 +11,11 @@ import Control.Lens.TH
 
 default ()
 
-newtype Time = Time { _getTime :: POSIXTime } deriving (Fractional, Num, Real, Eq, Ord, Show)
+-- | A unix timestamp.
+newtype Time = Time { _getTime :: Int } deriving (Num, Eq, Ord, Show)
 
--- Might be better to keep this abstract..
+-- | A 'SlackTimeStamp' is a unix timestamp, plus a sequence number that
+-- uniquely identifies (e.g.) a message in a channel.
 data SlackTimeStamp = SlackTimeStamp { _slackTime :: Time, _timestampUid :: Int } deriving (Show, Ord, Eq)
 
 makeLenses ''SlackTimeStamp
@@ -27,9 +29,12 @@ instance FromJSON SlackTimeStamp where
                     <*> readZ uid)
 
 instance FromJSON Time where
-  parseJSON (Number s) = return $ Time $ realToFrac s
+  parseJSON (Number s) =
+    case floatingOrInteger s :: Either Float Int of
+      Left _ -> error "Time.FromJSON: non-integer unix timestamp"
+      Right n -> return $ Time n
   parseJSON (String t) = parseTimeString $ T.unpack t
   parseJSON _ = empty
 
 parseTimeString :: String -> Parser Time
-parseTimeString s = fmap (Time . realToFrac) (readZ s :: Parser Integer)
+parseTimeString s = Time <$> readZ s

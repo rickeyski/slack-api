@@ -1,3 +1,7 @@
+## Unreleased
+
+* Changed `newtype Time = Time NominalDiffTime` to `newtype Time = Time Int`
+
 ## 0.12
 
 * Remove _prefSpeakGrowls, _prefMacSpeakVoice, _prefMacSpeakSpeed
