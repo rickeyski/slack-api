@@ -16,7 +16,7 @@
 --
 -- This basic example echos every message the bot recieves.
 -- Other examples can be found in the
--- @<http://google.com examples>@ directory.
+-- @<https://github.com/mpickering/slack-api/tree/master/example example>@ directory.
 --
 -- > myConfig :: SlackConfig
 -- > myConfig = SlackConfig
