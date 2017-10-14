@@ -1,29 +1,30 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
+import Control.Monad
+import Data.Maybe
+import System.Environment
 import Web.Slack
-import Web.Slack.Message
-import System.Environment (lookupEnv)
-import Data.Maybe (fromMaybe)
+
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
 #endif
 
-myConfig :: String -> SlackConfig
-myConfig apiToken = SlackConfig
-         { _slackApiToken = apiToken -- Specify your API token here
-         }
-
-echoBot :: SlackBot ()
-echoBot (Message cid _ msg _ _ _) = sendMessage cid msg
-echoBot _ = return ()
-
 main :: IO ()
 main = do
-  apiToken <- fromMaybe (error "SLACK_API_TOKEN not set")
-               <$> lookupEnv "SLACK_API_TOKEN"
-  runBot (myConfig apiToken) echoBot ()
+    conf <- mkConfig
+    withSlackHandle conf echoBot
 
+mkConfig :: IO SlackConfig
+mkConfig = do
+    x <- lookupEnv "SLACK_API_TOKEN"
+    let apiToken = fromMaybe (error "SLACK_API_TOKEN not set") x
+    return SlackConfig{ _slackApiToken = apiToken }
 
-
+echoBot :: SlackHandle -> IO ()
+echoBot h = forever $ do
+    getNextEvent h >>= \case
+        (Message cid _ msg _ _ _) -> sendMessage h cid msg
+        _ -> return ()
