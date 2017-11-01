@@ -52,6 +52,7 @@ module Web.Slack
     , sendMessage
     , sendRichMessage
     , sendPing
+    , addReaction
 
       -- * Type re-exports
     , SlackConfig(..)
@@ -184,6 +185,19 @@ sendRichMessage
     :: SlackHandle -> ChannelId -> T.Text -> [Attachment] -> IO (Either T.Text ())
 sendRichMessage h cid msg as =
     runExceptT $ chat_postMessage (getConfig h) cid msg as
+
+-- | Add a reaction to a message in the specified channel.
+--
+-- Note that, since this function uses the slack web API (not the RTD api)
+-- under the hood.
+addReaction :: (MonadError T.Text m, MonadIO m)
+            => SlackHandle
+            -> ChannelId
+            -> T.Text
+            -> SlackTimeStamp
+            -> m ()
+addReaction h cid emoji timestamp =
+    reactions_add_message (getConfig h) cid emoji timestamp
 
 -------------------------------------------------------------------------------
 -- Helpers

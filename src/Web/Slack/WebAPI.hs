@@ -9,6 +9,7 @@ module Web.Slack.WebAPI
       -- * Methods
     , rtm_start
     , chat_postMessage
+    , reactions_add_message
     ) where
 
 import Control.Lens hiding ((??))
@@ -73,6 +74,19 @@ chat_postMessage conf (Id cid) msg as =
         (W.param "text"        .~ [msg]) .
         (W.param "attachments" .~ [encode' as]) .
         (W.param "as_user"     .~ ["true"])
+
+reactions_add_message
+    :: (MonadError T.Text m, MonadIO m)
+    => SlackConfig
+    -> ChannelId
+    -> T.Text
+    -> SlackTimeStamp
+    -> m ()
+reactions_add_message conf (Id cid) emoji timestamp = do
+    void $ makeSlackCall conf "reactions.add" $
+        (W.param "name"      .~ [emoji]) .
+        (W.param "channel"   .~ [cid]) .
+        (W.param "timestamp" .~ [encode' timestamp])
 
 -------------------------------------------------------------------------------
 -- Helpers
