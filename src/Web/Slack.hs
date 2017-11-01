@@ -190,9 +190,14 @@ sendRichMessage h cid msg as =
 --
 -- Note that, since this function uses the slack web API (not the RTD api)
 -- under the hood.
-addReaction :: SlackHandle -> ChannelId -> T.Text -> SlackTimeStamp -> IO (Either T.Text ())
+addReaction :: (MonadError T.Text m, MonadIO m)
+            => SlackHandle
+            -> ChannelId
+            -> T.Text
+            -> SlackTimeStamp
+            -> m ()
 addReaction h cid emoji timestamp =
-    runExceptT $ reactions_add_message (getConfig h) cid emoji timestamp
+    reactions_add_message (getConfig h) cid emoji timestamp
 
 -------------------------------------------------------------------------------
 -- Helpers

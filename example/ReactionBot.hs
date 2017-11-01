@@ -5,6 +5,7 @@
 module Main where
 
 import Control.Monad
+import Control.Monad.Trans.Except (runExceptT)
 import Data.Maybe
 import System.Environment
 import Web.Slack
@@ -27,5 +28,6 @@ mkConfig = do
 reactionBot :: SlackHandle -> IO ()
 reactionBot h = forever $ do
     getNextEvent h >>= \case
-        (Message cid _ _ ts _ _) -> void (addReaction h cid "thumbsup" ts)
+        (Message cid _ _ ts _ _) -> void . runExceptT $
+          addReaction h cid "thumbsup" ts
         _ -> return ()
