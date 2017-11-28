@@ -67,7 +67,7 @@ library
     , bytestring >= 0.9.1
     , containers >= 0.4
       -- Normal Packages
-    , aeson >= 0.8
+    , aeson >= 1.0
     , errors >= 1.4 && < 3.0
     , hashable >= 1.2
     , io-streams >= 1.2
