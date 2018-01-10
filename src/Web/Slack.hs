@@ -105,7 +105,7 @@ parseWebSocketUrl :: Monad m => T.Text -> ExceptT T.Text m (String, String)
 parseWebSocketUrl url = do
     uri  <- URI.parseURI (T.unpack url) ?? ("Couldn't parse WebSockets URL: " <> url)
     auth <- URI.uriAuthority uri ?? ("No authority: " <> url)
-    return (URI.uriRegName auth, URI.uriPath uri)
+    return (URI.uriRegName auth, URI.uriPath uri ++ URI.uriQuery uri)
 
 -- | Retrieve the config used to initiate the session.
 getConfig :: SlackHandle -> SlackConfig
