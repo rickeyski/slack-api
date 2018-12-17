@@ -22,7 +22,6 @@ data Preferences = Preferences
                  , _prefPushLoudChannelsSet             :: Text
                  , _prefEmailAlerts                     :: Text
                  , _prefEmailAlertsSleepUntil           :: Int
-                 , _prefEmailMisc                       :: Bool
                  , _prefEmailWeekly                     :: Bool
                  , _prefWelcomeMessageHidden            :: Bool
                  , _prefAllChannelsLoud                 :: Bool
