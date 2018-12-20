@@ -73,7 +73,6 @@ data Preferences = Preferences
                  , _prefKKeyOmnibox                     :: Bool
                  , _prefPushAtChannelSuppressedChannels :: Text
                  , _prefPromptedForEmailDisabling       :: Bool
-                 , _prefFullTextExtracts                :: Bool
                  , _prefNoTextInNotifications           :: Bool
                  , _prefMutedChannels                   :: Text
                  , _prefPrivacyPolicySeen               :: Bool
