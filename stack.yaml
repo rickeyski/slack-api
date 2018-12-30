@@ -1,0 +1,7 @@
+resolver: lts-13.0
+packages:
+- .
+
+flags:
+  slack-api:
+    build-examples: false
