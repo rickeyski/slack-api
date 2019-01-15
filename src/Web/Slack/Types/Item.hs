@@ -13,7 +13,7 @@ import Web.Slack.Types.Base
 import Control.Lens.TH
 import Prelude
 
-data Item = MessageItem ChannelId MessageUpdate
+data Item = MessageItem ChannelId (Maybe MessageUpdate)
           | FileItem File
           | FileCommentItem File Comment
           | ChannelItem ChannelId
@@ -30,7 +30,7 @@ instance  FromJSON Item where
   parseJSON = withObject "item" (\o -> do
                 (typ :: String) <- o .: "type"
                 case typ of
-                  "message" -> MessageItem <$> o .: "channel" <*> o .: "message"
+                  "message" -> MessageItem <$> o .: "channel" <*> o .:? "message"
                   "file" -> FileItem <$> o .: "file"
                   "file_comment" -> FileCommentItem <$> o .: "file" <*> o .: "comment"
                   "channel" -> ChannelItem <$> o .: "channel"
