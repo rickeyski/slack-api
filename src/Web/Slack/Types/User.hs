@@ -26,7 +26,8 @@ data User = User
           } deriving (Show)
 
 instance FromJSON User where
-  parseJSON = withObject "User" (\o -> User <$> o .: "id" <*> o .: "name" <*> o .: "deleted"
+  parseJSON = withObject "User" (\o -> User <$> o .: "id" <*> o .: "name"
+                                        <*> (o .:? "deleted" .!= False)
                                         <*> (o .:? "color" .!= "000000")
                                         <*> o .: "profile" <*> (parseJSON (Object o) :: Parser Permissions)
                                         <*> fmap (fromMaybe False) (o .:? "has_files")
