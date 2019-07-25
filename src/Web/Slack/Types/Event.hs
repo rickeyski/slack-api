@@ -41,6 +41,7 @@ data Event where
   ChannelRename :: ChannelRenameInfo -> Event
   ChannelUnarchive :: ChannelId -> UserId -> Event
   CommandsChanged :: SlackTimeStamp -> Event
+  DesktopNotification :: Event
   EmailDomainChange :: Domain -> SlackTimeStamp -> Event
   EmojiChanged :: SlackTimeStamp -> Event
   FileChange  :: File -> Event
@@ -128,6 +129,7 @@ parseType o@(Object v) typ =
       "channel_rename"  -> ChannelRename <$> v .: "channel"
       "channel_unarchive" -> ChannelUnarchive <$> v .: "channel" <*> v .: "user"
       "commands_changed" -> CommandsChanged <$> v .: "event_ts"
+      "desktop_notification" -> pure DesktopNotification
       "email_domain_changed" -> EmailDomainChange <$> v .: "email_domain" <*> v .: "event_ts"
       "emoji_changed" -> EmojiChanged <$> v .: "event_ts"
       "file_change"  -> FileChange <$> v .: "file"
