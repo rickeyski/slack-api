@@ -71,6 +71,7 @@ data Event where
   ImMarked :: IMId -> SlackTimeStamp -> Event
   ImOpen :: UserId -> IMId -> Event
   ManualPresenceChange :: Presence -> Event
+  MemberJoinedChannel :: ChannelId -> SlackTimeStamp -> UserId {- inviter -} -> UserId {- invitee -} -> Event
   Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Event
   MessageError :: Int -> SlackError -> Event
   MessageResponse :: Int -> SlackTimeStamp -> Text -> Event
@@ -158,6 +159,7 @@ parseType o@(Object v) typ =
       "im_marked" -> ImMarked <$> v .: "channel" <*> v .: "ts"
       "im_open"     -> ImOpen <$> v .: "user" <*> v .: "channel"
       "manual_presence_change" -> ManualPresenceChange <$> v .: "presence"
+      "member_joined_channel" -> MemberJoinedChannel <$> v.: "channel" <*> v.: "event_ts" <*> v.: "inviter" <*> v.: "user"
       "message" -> do
         subt <- (\case
                   Nothing -> return Nothing
