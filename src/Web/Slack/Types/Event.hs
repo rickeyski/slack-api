@@ -54,6 +54,7 @@ data Event where
   FilePublic :: FileReference -> Event
   FileShared :: FileReference -> Event
   FileUnshared :: File -> Event
+  Goodbye :: Event
   GroupArchive :: ChannelId -> Event
   GroupClose :: UserId -> ChannelId -> Event
   GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
@@ -143,6 +144,7 @@ parseType o@(Object v) typ =
       "file_public"  -> FilePublic <$> v .: "file"
       "file_shared"  -> FileShared <$> v .: "file"
       "file_unshared" -> FileUnshared <$> v .: "file"
+      "goodbye" -> pure Goodbye
       "group_archive" -> GroupArchive <$> v .: "channel"
       "group_close" -> GroupClose <$> v .: "user" <*> v .: "channel"
       "group_history_changed" -> GroupHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
