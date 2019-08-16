@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, ScopedTypeVariables, TemplateHaskell #-}
+
 module Web.Slack.Types.Item where
 
 import Data.Aeson
@@ -12,6 +13,8 @@ import Web.Slack.Types.Base
 
 import Control.Lens.TH
 import Prelude
+
+import qualified Data.List.NonEmpty as DLN
 
 data Item = MessageItem ChannelId MessageUpdate
           | FileItem File
@@ -64,8 +67,65 @@ instance FromJSON MessageUpdate where
 
 data Edited = Edited { _editedUser :: UserId, _editTimestap :: SlackTimeStamp } deriving Show
 
-makeLenses ''MessageUpdate
+data MessageReplied =
+  MessageReplied
+    { _messageRepliedThreadTS :: SlackTimeStamp
+    , _messageRepliedText :: Text
+    , _messageRepliedReplyCount :: Word
+    , _messageRepliedReplies :: DLN.NonEmpty MessageReply
+    , _messageRepliedTS :: SlackTimeStamp
+    }
+  deriving (Show)
+
+instance FromJSON MessageReplied where
+  parseJSON =
+    withObject
+      "MessageReplied"
+      (\o ->
+         MessageReplied <$> o .: "thread_ts" <*> o .: "text" <*>
+         o .: "reply_count" <*>
+         o .: "replies" <*>
+         o .: "ts")
+
+data MessageReply =
+  MessageReply
+    { _messageReplyUser :: UserId
+    , _messageReplyTS :: SlackTimeStamp
+    }
+  deriving (Show)
+
+instance FromJSON MessageReply where
+  parseJSON =
+    withObject "MessageReply" (\o -> MessageReply <$> o .: "user" <*> o .: "ts")
+
+data ThreadBroadcastRoot =
+  ThreadBroadcastRoot
+    { _threadBroadcastUser :: UserId
+    , _threadBroadcastText :: Text
+    , _threadBroadcastThreadTS :: SlackTimeStamp
+    , _threadBroadcastReplyCount :: Word
+    , _threadBroadcastReplies :: DLN.NonEmpty MessageReply
+    , _threadBroadcastUnreadCount :: Word
+    , _threadBroadcastTS :: SlackTimeStamp
+    }
+  deriving (Show)
+
+instance FromJSON ThreadBroadcastRoot where
+  parseJSON =
+    withObject
+      "ThreadBroadcastRoot"
+      (\o ->
+         ThreadBroadcastRoot <$> o .: "user" <*> o .: "text" <*>
+         o .: "thread_ts" <*>
+         o .: "reply_count" <*>
+         o .: "replies" <*>
+         o .: "unread_count" <*>
+         o .: "ts")
+
 makeLenses ''Edited
+makeLenses ''MessageReplied
+makeLenses ''MessageUpdate
+makeLenses ''ThreadBroadcastRoot
 
 instance FromJSON Edited where
   parseJSON = withObject "Edited" (\o -> Edited <$> o .: "user" <*> o .: "ts")
