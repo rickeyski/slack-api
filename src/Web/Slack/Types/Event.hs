@@ -28,71 +28,71 @@ import Prelude
 type Domain = Text
 
 data Event where
-  Hello :: Event
-  Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Event
-  HiddenMessage :: ChannelId -> Submitter -> SlackTimeStamp -> Maybe Subtype -> Event
-  ChannelMarked :: ChannelId -> SlackTimeStamp -> Event
+  AccountsChanged :: Event
+  BotAdded :: Bot -> Event
+  BotChanged :: Bot -> Event
+  ChannelArchive :: ChannelId -> UserId -> Event
   ChannelCreated :: Channel -> Event
+  ChannelDeleted :: ChannelId -> Event
+  ChannelHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
   ChannelJoined :: Channel -> Event
   ChannelLeft   :: ChannelId -> Event
-  ChannelDeleted :: ChannelId -> Event
+  ChannelMarked :: ChannelId -> SlackTimeStamp -> Event
   ChannelRename :: ChannelRenameInfo -> Event
-  ChannelArchive :: ChannelId -> UserId -> Event
   ChannelUnarchive :: ChannelId -> UserId -> Event
-  ChannelHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
-  ImCreated :: UserId -> IM -> Event
-  ImOpen :: UserId -> IMId -> Event
-  ImClose :: UserId -> IMId -> Event
-  ImMarked :: IMId -> SlackTimeStamp -> Event
-  ImHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
-  GroupJoined :: Channel -> Event
-  GroupLeft :: Channel -> Event
-  GroupOpen :: UserId -> ChannelId -> Event
-  GroupClose :: UserId -> ChannelId -> Event
-  GroupArchive :: ChannelId -> Event
-  GroupUnarchive :: ChannelId -> Event
-  GroupRename :: ChannelRenameInfo -> Event
-  GroupMarked :: ChannelId -> SlackTimeStamp -> Event
-  GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
+  CommandsChanged :: SlackTimeStamp -> Event
+  EmailDomainChange :: Domain -> SlackTimeStamp -> Event
+  EmojiChanged :: SlackTimeStamp -> Event
+  FileChange  :: File -> Event
+  FileCommentAdded :: File -> Comment -> Event
+  FileCommentDeleted :: File -> CommentId -> Event
+  FileCommentEdited :: File -> Comment -> Event
   FileCreated :: File -> Event
+  FileDeleted :: FileId -> SlackTimeStamp -> Event
+  FilePrivate :: FileId -> Event
+  FilePublic :: FileReference -> Event
   FileShared :: FileReference -> Event
   FileUnshared :: File -> Event
-  FilePublic :: FileReference -> Event
-  FilePrivate :: FileId -> Event
-  FileChange  :: File -> Event
-  FileDeleted :: FileId -> SlackTimeStamp -> Event
-  FileCommentAdded :: File -> Comment -> Event
-  FileCommentEdited :: File -> Comment -> Event
-  FileCommentDeleted :: File -> CommentId -> Event
-  PresenceChange :: UserId -> Presence -> Event
+  GroupArchive :: ChannelId -> Event
+  GroupClose :: UserId -> ChannelId -> Event
+  GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
+  GroupJoined :: Channel -> Event
+  GroupLeft :: Channel -> Event
+  GroupMarked :: ChannelId -> SlackTimeStamp -> Event
+  GroupOpen :: UserId -> ChannelId -> Event
+  GroupRename :: ChannelRenameInfo -> Event
+  GroupUnarchive :: ChannelId -> Event
+  Hello :: Event
+  HiddenMessage :: ChannelId -> Submitter -> SlackTimeStamp -> Maybe Subtype -> Event
+  ImClose :: UserId -> IMId -> Event
+  ImCreated :: UserId -> IM -> Event
+  ImHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
+  ImMarked :: IMId -> SlackTimeStamp -> Event
+  ImOpen :: UserId -> IMId -> Event
   ManualPresenceChange :: Presence -> Event
+  Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Event
+  MessageError :: Int -> SlackError -> Event
+  MessageResponse :: Int -> SlackTimeStamp -> Text -> Event
+  Pong :: Time -> Event
   PrefChange :: Pref -> Event
-  UserChange :: User -> Event
-  TeamJoin :: User -> Event
+  PresenceChange :: UserId -> Presence -> Event
   ReactionAdded :: UserId -> Text -> UserId {- item author -} -> EmbeddedItem -> SlackTimeStamp -> Event
   ReactionRemoved :: UserId -> Maybe Text -> EmbeddedItem -> SlackTimeStamp -> Event
+  ReconnectUrl :: URL -> Event
   StarAdded :: UserId -> Item -> SlackTimeStamp -> Event
   StarRemoved :: UserId -> Item -> SlackTimeStamp -> Event
-  EmojiChanged :: SlackTimeStamp -> Event
-  CommandsChanged :: SlackTimeStamp -> Event
+  StatusChange :: UserId -> Text -> SlackTimeStamp -> Event
+  TeamDomainChange :: URL -> Domain -> Event
+  TeamJoin :: User -> Event
+  TeamMigrationStarted :: Event
   TeamPrefChange :: Pref -> Event
   TeamRenameEvent :: Text -> Event
-  TeamDomainChange :: URL -> Domain -> Event
-  EmailDomainChange :: Domain -> SlackTimeStamp -> Event
-  BotChanged :: Bot -> Event
-  BotAdded :: Bot -> Event
-  AccountsChanged :: Event
+  UserChange :: User -> Event
   UserTyping :: ChannelId -> UserId -> Event
-  MessageResponse :: Int -> SlackTimeStamp -> Text -> Event
-  MessageError :: Int -> SlackError -> Event
-  StatusChange :: UserId -> Text -> SlackTimeStamp -> Event
-  Pong :: Time -> Event
-  ReconnectUrl :: URL -> Event
-  TeamMigrationStarted :: Event
   -- Unstable
+  NoEvent :: Event
   PinAdded :: Event
   PinRemoved :: Event
-  NoEvent :: Event
   -- Parsing failing of an event
   UnknownEvent :: Value -> Event
   deriving (Show)
@@ -115,8 +115,47 @@ instance FromJSON Event where
 parseType :: Value -> Text -> Parser Event
 parseType o@(Object v) typ =
     case typ of
+      "accounts_changed" -> pure AccountsChanged
+      "bot_added" -> BotAdded <$> v .:  "bot"
+      "bot_changed" -> BotChanged <$> v .: "bot"
+      "channel_archive" -> ChannelArchive <$> v .: "channel" <*> v .: "user"
+      "channel_created" -> ChannelCreated <$> v .: "channel"
+      "channel_deleted" -> ChannelDeleted <$> v .: "channel"
+      "channel_history_changed" -> ChannelHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
+      "channel_joined"  -> ChannelJoined <$> v .: "channel"
+      "channel_left"    -> ChannelLeft <$> v .: "channel"
+      "channel_marked"  -> ChannelMarked <$> v .: "channel" <*> v .: "ts"
+      "channel_rename"  -> ChannelRename <$> v .: "channel"
+      "channel_unarchive" -> ChannelUnarchive <$> v .: "channel" <*> v .: "user"
+      "commands_changed" -> CommandsChanged <$> v .: "event_ts"
+      "email_domain_changed" -> EmailDomainChange <$> v .: "email_domain" <*> v .: "event_ts"
+      "emoji_changed" -> EmojiChanged <$> v .: "event_ts"
+      "file_change"  -> FileChange <$> v .: "file"
+      "file_comment_added" -> FileCommentAdded <$> v .: "file" <*> v .: "comment"
+      "file_comment_deleted" -> FileCommentDeleted <$> v .: "file" <*> v .: "comment"
+      "file_comment_edited" -> FileCommentEdited <$> v .: "file" <*> v .: "comment"
+      "file_created" -> FileCreated <$> v .: "file"
+      "file_deleted"  -> FileDeleted <$> v .: "file_id" <*> v .: "event_ts"
+      "file_private" -> FilePrivate <$> v .: "file"
+      "file_public"  -> FilePublic <$> v .: "file"
+      "file_shared"  -> FileShared <$> v .: "file"
+      "file_unshared" -> FileUnshared <$> v .: "file"
+      "group_archive" -> GroupArchive <$> v .: "channel"
+      "group_close" -> GroupClose <$> v .: "user" <*> v .: "channel"
+      "group_history_changed" -> GroupHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
+      "group_joined" -> GroupJoined <$> v .: "channel"
+      "group_left" ->  GroupLeft <$> v  .: "channel"
+      "group_marked" -> GroupMarked <$> v .: "channel" <*> v .: "ts"
+      "group_open" ->  GroupOpen <$> v .: "user" <*> v .: "channel"
+      "group_rename" -> GroupRename <$> v .: "channel"
+      "group_unarchive" -> GroupUnarchive <$> v .: "channel"
       "hello" -> return Hello
-
+      "im_close" -> ImClose <$> v .: "user" <*> v .: "channel"
+      "im_created" -> ImCreated <$> v .: "user" <*> v .: "channel"
+      "im_history_changed" -> ImHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
+      "im_marked" -> ImMarked <$> v .: "channel" <*> v .: "ts"
+      "im_open"     -> ImOpen <$> v .: "user" <*> v .: "channel"
+      "manual_presence_change" -> ManualPresenceChange <$> v .: "presence"
       "message" -> do
         subt <- (\case
                   Nothing -> return Nothing
@@ -129,64 +168,24 @@ parseType o@(Object v) typ =
         if not hidden
           then Message <$>  v .: "channel" <*> pure submitter  <*> v .: "text" <*> v .: "ts" <*> pure subt <*> v .:? "edited"
           else HiddenMessage <$>  v .: "channel" <*> pure submitter  <*> v .: "ts" <*> pure subt
-      "user_typing" -> UserTyping <$> v .: "channel" <*> v .: "user"
-      "presence_change" -> PresenceChange <$> v .: "user" <*> v .: "presence"
-      "channel_marked"  -> ChannelMarked <$> v .: "channel" <*> v .: "ts"
-      "channel_created" -> ChannelCreated <$> v .: "channel"
-      "channel_joined"  -> ChannelJoined <$> v .: "channel"
-      "channel_left"    -> ChannelLeft <$> v .: "channel"
-      "channel_deleted" -> ChannelDeleted <$> v .: "channel"
-      "channel_rename"  -> ChannelRename <$> v .: "channel"
-      "channel_archive" -> ChannelArchive <$> v .: "channel" <*> v .: "user"
-      "channel_unarchive" -> ChannelUnarchive <$> v .: "channel" <*> v .: "user"
-      "channel_history_changed" -> ChannelHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
-      "im_open"     -> ImOpen <$> v .: "user" <*> v .: "channel"
-      "im_created" -> ImCreated <$> v .: "user" <*> v .: "channel"
-      "im_close" -> ImClose <$> v .: "user" <*> v .: "channel"
-      "im_marked" -> ImMarked <$> v .: "channel" <*> v .: "ts"
-      "im_history_changed" -> ImHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
-      "group_joined" -> GroupJoined <$> v .: "channel"
-      "group_left" ->  GroupLeft <$> v  .: "channel"
-      "group_open" ->  GroupOpen <$> v .: "user" <*> v .: "channel"
-      "group_close" -> GroupClose <$> v .: "user" <*> v .: "channel"
-      "group_archive" -> GroupArchive <$> v .: "channel"
-      "group_unarchive" -> GroupUnarchive <$> v .: "channel"
-      "group_rename" -> GroupRename <$> v .: "channel"
-      "group_marked" -> GroupMarked <$> v .: "channel" <*> v .: "ts"
-      "group_history_changed" -> GroupHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
-      "file_created" -> FileCreated <$> v .: "file"
-      "file_shared"  -> FileShared <$> v .: "file"
-      "file_unshared" -> FileUnshared <$> v .: "file"
-      "file_public"  -> FilePublic <$> v .: "file"
-      "file_private" -> FilePrivate <$> v .: "file"
-      "file_change"  -> FileChange <$> v .: "file"
-      "file_deleted"  -> FileDeleted <$> v .: "file_id" <*> v .: "event_ts"
-      "file_comment_added" -> FileCommentAdded <$> v .: "file" <*> v .: "comment"
-      "file_comment_edited" -> FileCommentEdited <$> v .: "file" <*> v .: "comment"
-      "file_comment_deleted" -> FileCommentDeleted <$> v .: "file" <*> v .: "comment"
-      "manual_presence_change" -> ManualPresenceChange <$> v .: "presence"
-      "pref_change" -> curry PrefChange <$> v .: "name" <*> v .: "value"
-      "user_change" -> UserChange <$> v .: "user"
-      "team_join"   -> TeamJoin <$> v .: "user"
-      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .: "reaction" <*> v .: "item_user" <*> v .: "item" <*> v .: "event_ts"
-      "reaction_removed" -> ReactionRemoved <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
-      "star_added" ->  StarAdded <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
-      "star_removed" -> StarRemoved <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
-      "emoji_changed" -> EmojiChanged <$> v .: "event_ts"
-      "commands_changed" -> CommandsChanged <$> v .: "event_ts"
-      "team_pref_change" -> curry TeamPrefChange <$> v .: "name" <*> v .: "value"
-      "team_rename" -> TeamRenameEvent <$> v .: "name"
-      "team_domain_change" -> TeamDomainChange <$> v .: "url" <*> v .: "domain"
-      "email_domain_changed" -> EmailDomainChange <$> v .: "email_domain" <*> v .: "event_ts"
-      "bot_added" -> BotAdded <$> v .:  "bot"
-      "bot_changed" -> BotChanged <$> v .: "bot"
-      "accounts_changed" -> pure AccountsChanged
-      "status_change" -> StatusChange <$> v .: "user" <*> v .: "status" <*> v .: "event_ts"
-      "pong" -> Pong <$> v .: "timestamp"
-      "reconnect_url" -> ReconnectUrl <$> v .: "url"
-      "team_migration_started" -> pure TeamMigrationStarted
       "pin_added" -> pure PinAdded
       "pin_removed" -> pure PinRemoved
+      "pong" -> Pong <$> v .: "timestamp"
+      "pref_change" -> curry PrefChange <$> v .: "name" <*> v .: "value"
+      "presence_change" -> PresenceChange <$> v .: "user" <*> v .: "presence"
+      "reaction_added" -> ReactionAdded <$> v .: "user" <*> v .: "reaction" <*> v .: "item_user" <*> v .: "item" <*> v .: "event_ts"
+      "reaction_removed" -> ReactionRemoved <$> v .: "user" <*> v .:? "name" <*> v .: "item" <*> v .: "event_ts"
+      "reconnect_url" -> ReconnectUrl <$> v .: "url"
+      "star_added" ->  StarAdded <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
+      "star_removed" -> StarRemoved <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
+      "status_change" -> StatusChange <$> v .: "user" <*> v .: "status" <*> v .: "event_ts"
+      "team_domain_change" -> TeamDomainChange <$> v .: "url" <*> v .: "domain"
+      "team_join"   -> TeamJoin <$> v .: "user"
+      "team_migration_started" -> pure TeamMigrationStarted
+      "team_pref_change" -> curry TeamPrefChange <$> v .: "name" <*> v .: "value"
+      "team_rename" -> TeamRenameEvent <$> v .: "name"
+      "user_change" -> UserChange <$> v .: "user"
+      "user_typing" -> UserTyping <$> v .: "channel" <*> v .: "user"
       _ -> return $ UnknownEvent o
 parseType _ _ = error "Expecting object"
 
