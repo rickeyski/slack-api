@@ -43,7 +43,7 @@ data Event where
   CommandsChanged :: SlackTimeStamp -> Event
   EmailDomainChange :: Domain -> SlackTimeStamp -> Event
   EmojiChanged :: SlackTimeStamp -> Event
-  FileChange  :: File -> Event
+  FileChange  :: FileChangeInfo -> Event
   FileCommentAdded :: File -> Comment -> Event
   FileCommentDeleted :: File -> CommentId -> Event
   FileCommentEdited :: File -> Comment -> Event
@@ -130,7 +130,7 @@ parseType o@(Object v) typ =
       "commands_changed" -> CommandsChanged <$> v .: "event_ts"
       "email_domain_changed" -> EmailDomainChange <$> v .: "email_domain" <*> v .: "event_ts"
       "emoji_changed" -> EmojiChanged <$> v .: "event_ts"
-      "file_change"  -> FileChange <$> v .: "file"
+      "file_change"  -> FileChange <$> parseJSON o
       "file_comment_added" -> FileCommentAdded <$> v .: "file" <*> v .: "comment"
       "file_comment_deleted" -> FileCommentDeleted <$> v .: "file" <*> v .: "comment"
       "file_comment_edited" -> FileCommentEdited <$> v .: "file" <*> v .: "comment"
