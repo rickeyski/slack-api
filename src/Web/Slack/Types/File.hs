@@ -16,6 +16,24 @@ import Web.Slack.Types.Base
 
 import Prelude
 
+newtype FileChangeFile = FileChangeFileInfo { _fileChangeFileInfoFileId :: FileId }  deriving (Show)
+
+instance FromJSON FileChangeFile where
+  parseJSON = withObject "FileChangeFile" (\o -> FileChangeFileInfo <$> o .: "id" )
+
+-- | Event information for when a file changes.  Note, the Slack API
+-- information for this type, as of 2019-08-16, is incorrect in quite
+-- a few ways.
+data FileChangeInfo = FileChangeInfo { _fileChangeInfoFileId :: FileId
+                             , _fileChangeInfoUserId :: UserId
+                             , _fileChangeInfoFile :: FileChangeFile
+                             , _fileChangeInfoEventTS :: SlackTimeStamp
+                             , _fileChangeInfoTS :: Maybe SlackTimeStamp
+                             } deriving (Show)
+
+instance FromJSON FileChangeInfo where
+  parseJSON = withObject "FileChangeInfo" (\o -> FileChangeInfo <$> o .: "file_id" <*> o .: "user_id" <*> o .: "file" <*> o .: "event_ts" <*> o .:? "ts")
+
 data File = File { _fileId             :: FileId
                  , _fileTimestamp      :: Time
                  , _fileName           :: Maybe Text
