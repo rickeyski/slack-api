@@ -39,6 +39,8 @@ data Subtype where
   SMeMessage  :: Subtype
   SMessageChanged :: MessageUpdate -> Subtype
   SMessageDeleted :: SlackTimeStamp -> Subtype
+  SMessageReplied :: MessageReplied -> Subtype
+  SThreadBroadcast :: ThreadBroadcastRoot -> Subtype
   -- These two subtypes are documented as unstable, so they shouldn't
   -- be used.  See https://api.slack.com/events/message/pinned_item
   -- for more detail and updates.
@@ -73,7 +75,9 @@ subtype s = withObject "subtype" (\v ->
     "me_message"  -> return SMeMessage
     "message_changed" -> SMessageChanged <$> v .: "message"
     "message_deleted" -> SMessageDeleted <$> v .: "deleted_ts"
+    "message_replied" -> SMessageReplied <$> v .: "message"
     "pinned_item"   -> pure SPinnedItem
+    "thread_broadcast" -> SThreadBroadcast <$> v .: "root"
     "unpinned_item" -> pure SUnpinnedItem
     _               -> fail $ "Unrecognised subtype: " ++ s)
 
