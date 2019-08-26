@@ -3,6 +3,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE CPP #-}
 
 -- | Bindings to the various Slack APIs, for writing chat bots.
 --
@@ -65,7 +66,6 @@ import Control.Error
 import Control.Monad.Except
 import Data.Aeson
 import Data.IORef
-import Data.Monoid
 import qualified Data.Text as T
 import Data.Time.Clock.POSIX
 import qualified Network.URI as URI
@@ -73,6 +73,11 @@ import qualified Network.WebSockets as WS
 import Web.Slack.Types
 import Web.Slack.WebAPI
 import Wuss
+#if MIN_VERSION_base(4,11,0)
+-- We get <> from the Prelude < 4.11.0
+#else
+import Data.Semigroup ((<>))
+#endif
 
 -- | This library exposes a simple handle-based API. A `SlackHandle` is
 -- a handle to an open RTM session. It can also be used to make calls to
