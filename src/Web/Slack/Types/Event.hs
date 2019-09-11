@@ -15,6 +15,7 @@ import Web.Slack.Types.Error
 import Web.Slack.Types.Event.Subtype
 import Web.Slack.Types.Time
 import Web.Slack.Types.Presence
+import Web.Slack.Types.Subteam
 
 import Data.Aeson
 import Data.Aeson.Types
@@ -82,6 +83,8 @@ data Event where
   StarAdded :: UserId -> Item -> SlackTimeStamp -> Event
   StarRemoved :: UserId -> Item -> SlackTimeStamp -> Event
   StatusChange :: UserId -> Text -> SlackTimeStamp -> Event
+  SubteamCreated :: Subteam -> Event
+  SubteamUpdated :: Subteam -> Event
   TeamDomainChange :: URL -> Domain -> Event
   TeamJoin :: User -> Event
   TeamMigrationStarted :: Event
@@ -179,6 +182,8 @@ parseType o@(Object v) typ =
       "star_added" ->  StarAdded <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
       "star_removed" -> StarRemoved <$> v .: "user" <*> v .: "item" <*> v .: "event_ts"
       "status_change" -> StatusChange <$> v .: "user" <*> v .: "status" <*> v .: "event_ts"
+      "subteam_created" -> SubteamCreated <$> v .: "subteam"
+      "subteam_updated" -> SubteamUpdated <$> v .: "subteam"
       "team_domain_change" -> TeamDomainChange <$> v .: "url" <*> v .: "domain"
       "team_join"   -> TeamJoin <$> v .: "user"
       "team_migration_started" -> pure TeamMigrationStarted
