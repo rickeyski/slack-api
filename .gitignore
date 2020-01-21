@@ -3,3 +3,6 @@ stack.yaml
 .ghc.environment.*
 dist-newstyle
 dist
+
+.idea/
+*.iml
