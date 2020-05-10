@@ -16,12 +16,12 @@ Bug-reports:         https://github.com/mpickering/slack-api/issues
 
 License-File:        LICENSE
 Author:              Matthew Pickering
-Maintainer:          matthewtpickering@gmail.com
+Maintainer:          rickeyvisinski+hs@gmail.com
 Stability:           Experimental
 Category:            Web
 Build-type:          Simple
 -- Exclude 8.2.1 due to GHC panic
-Tested-With:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5
+Tested-With:         GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5, GHC == 8.8.3
 Cabal-version:       >=1.10
 source-repository head
     type: git
