@@ -1,4 +1,4 @@
-![Travis Build Status](https://travis-ci.org/mpickering/slack-api.svg?branch=master)
+![Travis Build Status](https://travis-ci.org/rickeyski/slack-api.svg?branch=master)
 
 Bindings to the Slack RTM API.
 
