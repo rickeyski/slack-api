@@ -76,11 +76,6 @@ data Profile = Profile
              , _profileImage192           :: URL
              } deriving (Show)
 
-makeLenses ''Profile
-makeLenses ''Permissions
-makeLenses ''Timezone
-makeLenses ''User
-
 instance FromJSON Profile where
   parseJSON = withObject "Profile"
                 (\o -> let v = (o .:)
@@ -89,5 +84,10 @@ instance FromJSON Profile where
                           <*> vm "real_name_normalized" <*> vm "title" <*> vm "email"
                           <*> vm "skype" <*> vm "phone" <*> v "image_24" <*> v "image_32"
                           <*> v "image_48" <*> v "image_72" <*> v "image_192")
+
+makeLenses ''Profile
+makeLenses ''Permissions
+makeLenses ''Timezone
+makeLenses ''User
 
 type Username = Text

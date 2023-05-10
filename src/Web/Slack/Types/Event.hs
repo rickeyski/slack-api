@@ -202,10 +202,9 @@ data ChannelRenameInfo = ChannelRenameInfo
                        , _channelRenameName    :: Text
                        , _channelRenameCreated :: Time } deriving Show
 
-makeLenses ''ChannelRenameInfo
-
 instance FromJSON ChannelRenameInfo where
   parseJSON = withObject "ChannelRenameInfo" (\o -> ChannelRenameInfo <$> o .: "id" <*> o .: "name" <*> o .: "created")
 
+makeLenses ''ChannelRenameInfo
 
 makePrisms ''Event

@@ -67,6 +67,9 @@ instance FromJSON MessageUpdate where
 
 data Edited = Edited { _editedUser :: UserId, _editTimestap :: SlackTimeStamp } deriving Show
 
+instance FromJSON Edited where
+  parseJSON = withObject "Edited" (\o -> Edited <$> o .: "user" <*> o .: "ts")
+
 data MessageReplied =
   MessageReplied
     { _messageRepliedThreadTS :: SlackTimeStamp
@@ -126,6 +129,3 @@ makeLenses ''Edited
 makeLenses ''MessageReplied
 makeLenses ''MessageUpdate
 makeLenses ''ThreadBroadcastRoot
-
-instance FromJSON Edited where
-  parseJSON = withObject "Edited" (\o -> Edited <$> o .: "user" <*> o .: "ts")
