@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell, LambdaCase #-}
+{-# LANGUAGE TemplateHaskell, LambdaCase, TypeApplications #-}
 module Web.Slack.Types.Preferences where
 
 import           Data.Aeson.TH
@@ -82,7 +82,7 @@ data Preferences = Preferences
 
 $(deriveJSON defaultOptions {fieldLabelModifier = \case
                                                     "_prefTime24" -> "time24"
-                                                    s -> toSnake . drop (length "_pref") $ s} ''Preferences)
+                                                    s -> toSnake . drop (length @[] "_pref") $ s} ''Preferences)
 
 -- Bad performance regression from lens 4.6 causes GHC to run out of memory
 -- on compilation
