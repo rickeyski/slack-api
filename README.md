@@ -1,3 +1,8 @@
+# Deprecating this project
+
+Slack has announce they are ending support for the RTM API and are instead
+focusing on Web and Events [API](https://api.slack.com/apis).
+
 ![Travis Build Status](https://travis-ci.org/rickeyski/slack-api.svg?branch=master)
 
 Bindings to the Slack RTM API.
