@@ -4,7 +4,6 @@ module Web.Slack.Types.Subteam where
 
 import Data.Aeson (FromJSON(parseJSON), (.:), withObject)
 import Data.Text (Text)
-import Data.Word (Word)
 import Web.Slack.Types.Id (SubteamId, TeamId, UserId)
 
 data Subteam =

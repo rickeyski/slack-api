@@ -62,6 +62,15 @@ data File = File { _fileId             :: FileId
 
 data Mode = Hosted | External | Snippet | Post deriving Show
 
+instance FromJSON Mode where
+  parseJSON = withText "mode"
+                (\case
+                  "hosted"   -> pure Hosted
+                  "external" -> pure External
+                  "snippet"  -> pure Snippet
+                  "post"     -> pure Post
+                  s          -> fail $ "Unrecognised mode: " ++ T.unpack s)
+
 instance FromJSON File where
   parseJSON = withObject "File" (\o ->
               File <$> o .: "id" <*> o .: "timestamp" <*> o .: "name" <*> o .: "title"
@@ -93,13 +102,3 @@ makeLenses ''FileUrl
 makeLenses ''FileReference
 makeLenses ''Thumbnail
 makeLenses ''Preview
-
-
-instance FromJSON Mode where
-  parseJSON = withText "mode"
-                (\case
-                  "hosted"   -> pure Hosted
-                  "external" -> pure External
-                  "snippet"  -> pure Snippet
-                  "post"     -> pure Post
-                  s          -> fail $ "Unrecognised mode: " ++ T.unpack s)

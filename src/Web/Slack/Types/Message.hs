@@ -116,5 +116,5 @@ instance ToJSON AttachmentColor where
 
 $(deriveToJSON defaultOptions {fieldLabelModifier = toSnake . drop 7}  ''MessagePayload)
 $(deriveToJSON defaultOptions {fieldLabelModifier = toSnake . drop 4}  ''PingPayload)
-$(deriveToJSON defaultOptions {fieldLabelModifier = toSnake . drop 10} ''Attachment)
 $(deriveToJSON defaultOptions {fieldLabelModifier = toSnake . drop 5}  ''Field)
+$(deriveToJSON defaultOptions {fieldLabelModifier = toSnake . drop 10} ''Attachment)

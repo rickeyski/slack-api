@@ -30,7 +30,7 @@ data Channel = Channel { _channelId         :: ChannelId
 
 makeLenses ''Channel
 
-defaultToFalse :: Object -> Text -> Parser Bool
+defaultToFalse :: Object -> Key -> Parser Bool
 defaultToFalse o tag = fmap (fromMaybe False) $ o .:? tag
 
 instance FromJSON Channel where

@@ -103,8 +103,8 @@ withSlackHandle conf fn = crashOnError $ do
               , _shSession = sessionInfo
               , _shCounter = freshCounter
               }
-        WS.forkPingThread conn 10
-        fn h
+        WS.withPingThread conn 10 (pure ()) $
+          fn h
 
 parseWebSocketUrl :: Monad m => T.Text -> ExceptT T.Text m (String, String)
 parseWebSocketUrl url = do
