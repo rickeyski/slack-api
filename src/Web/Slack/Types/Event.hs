@@ -42,6 +42,7 @@ data Event where
   ChannelRename :: ChannelRenameInfo -> Event
   ChannelUnarchive :: ChannelId -> UserId -> Event
   CommandsChanged :: SlackTimeStamp -> Event
+  DesktopNotification :: Event
   EmailDomainChange :: Domain -> SlackTimeStamp -> Event
   EmojiChanged :: SlackTimeStamp -> Event
   FileChange  :: FileChangeInfo -> Event
@@ -54,6 +55,7 @@ data Event where
   FilePublic :: FileReference -> Event
   FileShared :: FileReference -> Event
   FileUnshared :: File -> Event
+  Goodbye :: Event
   GroupArchive :: ChannelId -> Event
   GroupClose :: UserId -> ChannelId -> Event
   GroupHistoryChanged :: SlackTimeStamp -> SlackTimeStamp -> SlackTimeStamp -> Event
@@ -71,6 +73,7 @@ data Event where
   ImMarked :: IMId -> SlackTimeStamp -> Event
   ImOpen :: UserId -> IMId -> Event
   ManualPresenceChange :: Presence -> Event
+  MemberJoinedChannel :: ChannelId -> SlackTimeStamp -> UserId {- inviter -} -> UserId {- invitee -} -> Event
   Message :: ChannelId -> Submitter -> Text -> SlackTimeStamp -> Maybe Subtype -> Maybe Edited -> Event
   MessageError :: Int -> SlackError -> Event
   MessageResponse :: Int -> SlackTimeStamp -> Text -> Event
@@ -131,6 +134,7 @@ parseType o@(Object v) typ =
       "channel_rename"  -> ChannelRename <$> v .: "channel"
       "channel_unarchive" -> ChannelUnarchive <$> v .: "channel" <*> v .: "user"
       "commands_changed" -> CommandsChanged <$> v .: "event_ts"
+      "desktop_notification" -> pure DesktopNotification
       "email_domain_changed" -> EmailDomainChange <$> v .: "email_domain" <*> v .: "event_ts"
       "emoji_changed" -> EmojiChanged <$> v .: "event_ts"
       "file_change"  -> FileChange <$> parseJSON o
@@ -143,6 +147,7 @@ parseType o@(Object v) typ =
       "file_public"  -> FilePublic <$> v .: "file"
       "file_shared"  -> FileShared <$> v .: "file"
       "file_unshared" -> FileUnshared <$> v .: "file"
+      "goodbye" -> pure Goodbye
       "group_archive" -> GroupArchive <$> v .: "channel"
       "group_close" -> GroupClose <$> v .: "user" <*> v .: "channel"
       "group_history_changed" -> GroupHistoryChanged <$> v .: "latest" <*> v .: "ts" <*> v .: "event_ts"
@@ -159,6 +164,7 @@ parseType o@(Object v) typ =
       "im_marked" -> ImMarked <$> v .: "channel" <*> v .: "ts"
       "im_open"     -> ImOpen <$> v .: "user" <*> v .: "channel"
       "manual_presence_change" -> ManualPresenceChange <$> v .: "presence"
+      "member_joined_channel" -> MemberJoinedChannel <$> v.: "channel" <*> v.: "event_ts" <*> v.: "inviter" <*> v.: "user"
       "message" -> do
         subt <- (\case
                   Nothing -> return Nothing
